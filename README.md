@@ -4,6 +4,30 @@ In this project, we collaborated as a team of four to design and implement an ex
 
 The goal was to apply object-oriented design principles and patterns to maximize reuse and flexibility, and then demonstrate our framework by plugging in three different games.
 
+## Submission Deliverables
+
+1. **Design Report (PDF)**
+   - **Format & Length:** Up to 12 A4 pages, 2 cm margins, single-spaced, 12 pt Times New Roman or 11 pt Arial.  
+   - **Content:**  
+     1. **Executive Summary** (≤ 2 pages)  
+        - Team member list (full name, student ID, email)  
+        - Contribution statement for each member  
+        - Declaration of which requirements have/ haven’t been implemented  
+     2. **Design Documents** (≤ 5 pages)  
+        - Overall class diagram with classes, attributes, methods, and relationships  
+        - Two object diagrams showing key runtime snapshots  
+        - Two sequence diagrams for representative scenarios (e.g., move, save/load, undo/redo)  
+     3. **Design Patterns & Principles** (≤ 3 pages)  
+        - Identification and justification of each pattern/principle used, referenced to your diagrams  
+     4. **Implementation Details** (≤ 2 pages)  
+        - Build and run instructions (`dotnet clean` / `dotnet run`)  
+        - External libraries/frameworks used (with class/interface names)  
+
+2. **Peer Review Submission**  
+   - Complete anonymous peer reviews for your three teammates in Canvas after group submission.  
+   - Your individual contribution score (10 %) is based on these reviews.
+
+
 ## Supported Games
 - **Numerical Tic-Tac-Toe** (from Assignment 1)  
 - **Notakto** (Neutral Tic-Tac-Toe on three 3×3 boards; last‐move loser)  
@@ -25,16 +49,6 @@ The goal was to apply object-oriented design principles and patterns to maximize
 - **In-Game Help**  
   - Text-based menu of available commands and usage examples  
 
-## Design Highlights
-- **UML Diagrams**  
-  - **Class Diagram** showing all framework and game-specific classes  
-  - **Object Diagrams** illustrating key game-state snapshots  
-  - **Sequence Diagrams** for player turns, save/load, and undo/redo  
-- **Design Patterns & Principles**  
-  - **Strategy Pattern** for interchangeable player behaviours  
-  - **Template Method** for the common game loop  
-  - **Command Pattern** to record moves for undo/redo  
-  - SOLID principles to ensure single responsibility and open/closed extensibility  
 
 ## Getting Started
 
