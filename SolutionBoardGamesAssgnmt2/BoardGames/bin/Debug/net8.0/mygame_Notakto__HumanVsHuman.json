@@ -1,0 +1,78 @@
+{
+  "Boards": [
+    {
+      "Size": 3,
+      "Cells": [
+        [
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          1,
+          null
+        ],
+        [
+          null,
+          null,
+          null
+        ]
+      ]
+    },
+    {
+      "Size": 3,
+      "Cells": [
+        [
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          1,
+          null
+        ],
+        [
+          null,
+          null,
+          null
+        ]
+      ]
+    },
+    {
+      "Size": 3,
+      "Cells": [
+        [
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          1,
+          null
+        ],
+        [
+          null,
+          null,
+          null
+        ]
+      ]
+    }
+  ],
+  "DeadBoards": [],
+  "Board": null,
+  "Player1": {
+    "$type": "notakto",
+    "Name": "Player 1",
+    "AvailableNumbers": []
+  },
+  "Player2": {
+    "$type": "notakto",
+    "Name": "Player 2",
+    "AvailableNumbers": []
+  },
+  "CurrentPlayerIndex": 2,
+  "IsHumanVsComputer": false
+}

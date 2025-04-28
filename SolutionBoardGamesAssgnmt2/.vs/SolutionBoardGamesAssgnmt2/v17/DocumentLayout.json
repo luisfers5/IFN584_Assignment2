@@ -1,0 +1,149 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\luisf\\OneDrive - Queensland University of Technology\\02Sem2\\IFN584 Obj Orient Des \u0026 Dev\\Assgmnt2\\SolutionBoardGamesAssgnmt2\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{B99080F6-2A74-438C-82E9-B569375279A4}|BoardGames\\BoardGames.csproj|c:\\users\\luisf\\onedrive - queensland university of technology\\02sem2\\ifn584 obj orient des \u0026 dev\\assgmnt2\\solutionboardgamesassgnmt2\\boardgames\\game.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B99080F6-2A74-438C-82E9-B569375279A4}|BoardGames\\BoardGames.csproj|solutionrelative:boardgames\\game.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B99080F6-2A74-438C-82E9-B569375279A4}|BoardGames\\BoardGames.csproj|c:\\users\\luisf\\onedrive - queensland university of technology\\02sem2\\ifn584 obj orient des \u0026 dev\\assgmnt2\\solutionboardgamesassgnmt2\\boardgames\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B99080F6-2A74-438C-82E9-B569375279A4}|BoardGames\\BoardGames.csproj|solutionrelative:boardgames\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B99080F6-2A74-438C-82E9-B569375279A4}|BoardGames\\BoardGames.csproj|c:\\users\\luisf\\onedrive - queensland university of technology\\02sem2\\ifn584 obj orient des \u0026 dev\\assgmnt2\\solutionboardgamesassgnmt2\\boardgames\\gomokugame.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B99080F6-2A74-438C-82E9-B569375279A4}|BoardGames\\BoardGames.csproj|solutionrelative:boardgames\\gomokugame.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B99080F6-2A74-438C-82E9-B569375279A4}|BoardGames\\BoardGames.csproj|c:\\users\\luisf\\onedrive - queensland university of technology\\02sem2\\ifn584 obj orient des \u0026 dev\\assgmnt2\\solutionboardgamesassgnmt2\\boardgames\\humanplayer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B99080F6-2A74-438C-82E9-B569375279A4}|BoardGames\\BoardGames.csproj|solutionrelative:boardgames\\humanplayer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B99080F6-2A74-438C-82E9-B569375279A4}|BoardGames\\BoardGames.csproj|c:\\users\\luisf\\onedrive - queensland university of technology\\02sem2\\ifn584 obj orient des \u0026 dev\\assgmnt2\\solutionboardgamesassgnmt2\\boardgames\\notaktogame.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B99080F6-2A74-438C-82E9-B569375279A4}|BoardGames\\BoardGames.csproj|solutionrelative:boardgames\\notaktogame.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B99080F6-2A74-438C-82E9-B569375279A4}|BoardGames\\BoardGames.csproj|c:\\users\\luisf\\onedrive - queensland university of technology\\02sem2\\ifn584 obj orient des \u0026 dev\\assgmnt2\\solutionboardgamesassgnmt2\\boardgames\\numericaltttgame.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B99080F6-2A74-438C-82E9-B569375279A4}|BoardGames\\BoardGames.csproj|solutionrelative:boardgames\\numericaltttgame.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B99080F6-2A74-438C-82E9-B569375279A4}|BoardGames\\BoardGames.csproj|c:\\users\\luisf\\onedrive - queensland university of technology\\02sem2\\ifn584 obj orient des \u0026 dev\\assgmnt2\\solutionboardgamesassgnmt2\\boardgames\\player.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B99080F6-2A74-438C-82E9-B569375279A4}|BoardGames\\BoardGames.csproj|solutionrelative:boardgames\\player.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B99080F6-2A74-438C-82E9-B569375279A4}|BoardGames\\BoardGames.csproj|c:\\users\\luisf\\onedrive - queensland university of technology\\02sem2\\ifn584 obj orient des \u0026 dev\\assgmnt2\\solutionboardgamesassgnmt2\\boardgames\\board.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B99080F6-2A74-438C-82E9-B569375279A4}|BoardGames\\BoardGames.csproj|solutionrelative:boardgames\\board.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 4,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "NotaktoGame.cs",
+              "DocumentMoniker": "C:\\Users\\luisf\\OneDrive - Queensland University of Technology\\02Sem2\\IFN584 Obj Orient Des \u0026 Dev\\Assgmnt2\\SolutionBoardGamesAssgnmt2\\BoardGames\\NotaktoGame.cs",
+              "RelativeDocumentMoniker": "BoardGames\\NotaktoGame.cs",
+              "ToolTip": "C:\\Users\\luisf\\OneDrive - Queensland University of Technology\\02Sem2\\IFN584 Obj Orient Des \u0026 Dev\\Assgmnt2\\SolutionBoardGamesAssgnmt2\\BoardGames\\NotaktoGame.cs",
+              "RelativeToolTip": "BoardGames\\NotaktoGame.cs",
+              "ViewState": "AQIAABUAAAAAAAAAAAAowBkAAAArAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-28T03:35:39.48Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "HumanPlayer.cs",
+              "DocumentMoniker": "C:\\Users\\luisf\\OneDrive - Queensland University of Technology\\02Sem2\\IFN584 Obj Orient Des \u0026 Dev\\Assgmnt2\\SolutionBoardGamesAssgnmt2\\BoardGames\\HumanPlayer.cs",
+              "RelativeDocumentMoniker": "BoardGames\\HumanPlayer.cs",
+              "ToolTip": "C:\\Users\\luisf\\OneDrive - Queensland University of Technology\\02Sem2\\IFN584 Obj Orient Des \u0026 Dev\\Assgmnt2\\SolutionBoardGamesAssgnmt2\\BoardGames\\HumanPlayer.cs",
+              "RelativeToolTip": "BoardGames\\HumanPlayer.cs",
+              "ViewState": "AQIAAAwAAAAAAAAAAAAYwAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-28T03:22:08.736Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "NumericalTTTGame.cs",
+              "DocumentMoniker": "C:\\Users\\luisf\\OneDrive - Queensland University of Technology\\02Sem2\\IFN584 Obj Orient Des \u0026 Dev\\Assgmnt2\\SolutionBoardGamesAssgnmt2\\BoardGames\\NumericalTTTGame.cs",
+              "RelativeDocumentMoniker": "BoardGames\\NumericalTTTGame.cs",
+              "ToolTip": "C:\\Users\\luisf\\OneDrive - Queensland University of Technology\\02Sem2\\IFN584 Obj Orient Des \u0026 Dev\\Assgmnt2\\SolutionBoardGamesAssgnmt2\\BoardGames\\NumericalTTTGame.cs",
+              "RelativeToolTip": "BoardGames\\NumericalTTTGame.cs",
+              "ViewState": "AQIAAC4AAAAAAAAAAAAQwAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-28T03:20:46.377Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Player.cs",
+              "DocumentMoniker": "C:\\Users\\luisf\\OneDrive - Queensland University of Technology\\02Sem2\\IFN584 Obj Orient Des \u0026 Dev\\Assgmnt2\\SolutionBoardGamesAssgnmt2\\BoardGames\\Player.cs",
+              "RelativeDocumentMoniker": "BoardGames\\Player.cs",
+              "ToolTip": "C:\\Users\\luisf\\OneDrive - Queensland University of Technology\\02Sem2\\IFN584 Obj Orient Des \u0026 Dev\\Assgmnt2\\SolutionBoardGamesAssgnmt2\\BoardGames\\Player.cs",
+              "RelativeToolTip": "BoardGames\\Player.cs",
+              "ViewState": "AQIAAAwAAAAAAAAAAAAAAAUAAAABAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-28T03:19:17.312Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Game.cs",
+              "DocumentMoniker": "C:\\Users\\luisf\\OneDrive - Queensland University of Technology\\02Sem2\\IFN584 Obj Orient Des \u0026 Dev\\Assgmnt2\\SolutionBoardGamesAssgnmt2\\BoardGames\\Game.cs",
+              "RelativeDocumentMoniker": "BoardGames\\Game.cs",
+              "ToolTip": "C:\\Users\\luisf\\OneDrive - Queensland University of Technology\\02Sem2\\IFN584 Obj Orient Des \u0026 Dev\\Assgmnt2\\SolutionBoardGamesAssgnmt2\\BoardGames\\Game.cs",
+              "RelativeToolTip": "BoardGames\\Game.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA0AAABjAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-28T03:15:51.908Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "GomokuGame.cs",
+              "DocumentMoniker": "C:\\Users\\luisf\\OneDrive - Queensland University of Technology\\02Sem2\\IFN584 Obj Orient Des \u0026 Dev\\Assgmnt2\\SolutionBoardGamesAssgnmt2\\BoardGames\\GomokuGame.cs",
+              "RelativeDocumentMoniker": "BoardGames\\GomokuGame.cs",
+              "ToolTip": "C:\\Users\\luisf\\OneDrive - Queensland University of Technology\\02Sem2\\IFN584 Obj Orient Des \u0026 Dev\\Assgmnt2\\SolutionBoardGamesAssgnmt2\\BoardGames\\GomokuGame.cs",
+              "RelativeToolTip": "BoardGames\\GomokuGame.cs",
+              "ViewState": "AQIAAAgAAAAAAAAAAAAAwAgAAAArAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-22T06:40:36.107Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Board.cs",
+              "DocumentMoniker": "C:\\Users\\luisf\\OneDrive - Queensland University of Technology\\02Sem2\\IFN584 Obj Orient Des \u0026 Dev\\Assgmnt2\\SolutionBoardGamesAssgnmt2\\BoardGames\\Board.cs",
+              "RelativeDocumentMoniker": "BoardGames\\Board.cs",
+              "ToolTip": "C:\\Users\\luisf\\OneDrive - Queensland University of Technology\\02Sem2\\IFN584 Obj Orient Des \u0026 Dev\\Assgmnt2\\SolutionBoardGamesAssgnmt2\\BoardGames\\Board.cs",
+              "RelativeToolTip": "BoardGames\\Board.cs",
+              "ViewState": "AQIAAAUAAAAAAAAAAAAxwAQAAAAEAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-22T05:57:20.485Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\luisf\\OneDrive - Queensland University of Technology\\02Sem2\\IFN584 Obj Orient Des \u0026 Dev\\Assgmnt2\\SolutionBoardGamesAssgnmt2\\BoardGames\\Program.cs",
+              "RelativeDocumentMoniker": "BoardGames\\Program.cs",
+              "ToolTip": "C:\\Users\\luisf\\OneDrive - Queensland University of Technology\\02Sem2\\IFN584 Obj Orient Des \u0026 Dev\\Assgmnt2\\SolutionBoardGamesAssgnmt2\\BoardGames\\Program.cs",
+              "RelativeToolTip": "BoardGames\\Program.cs",
+              "ViewState": "AQIAADUAAAAAAAAAAAAWwEUAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-22T05:55:17.408Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

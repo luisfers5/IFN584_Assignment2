@@ -1,0 +1,41 @@
+{
+  "Board": {
+    "Size": 3,
+    "Cells": [
+      [
+        7,
+        8,
+        null
+      ],
+      [
+        5,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        6
+      ]
+    ]
+  },
+  "Player1": {
+    "$type": "human",
+    "Name": "Player 1",
+    "AvailableNumbers": [
+      1,
+      3,
+      9
+    ]
+  },
+  "Player2": {
+    "$type": "computer",
+    "Name": "Computer",
+    "AvailableNumbers": [
+      2,
+      4
+    ]
+  },
+  "CurrentPlayerIndex": 1,
+  "IsHumanVsComputer": true
+}
