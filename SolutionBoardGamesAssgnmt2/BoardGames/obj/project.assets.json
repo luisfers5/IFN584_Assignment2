@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\luisf\\OneDrive - Queensland University of Technology\\02Sem2\\IFN584 Obj Orient Des & Dev\\Assgmnt2\\SolutionBoardGamesAssgnmt2\\BoardGames\\BoardGames.csproj",
+      "projectUniqueName": "C:\\Users\\luisf\\OneDrive - Queensland University of Technology\\02Sem2\\IFN584 Obj Orient Des & Dev\\IFN584_Assignment2\\SolutionBoardGamesAssgnmt2\\BoardGames\\BoardGames.csproj",
       "projectName": "BoardGames",
-      "projectPath": "C:\\Users\\luisf\\OneDrive - Queensland University of Technology\\02Sem2\\IFN584 Obj Orient Des & Dev\\Assgmnt2\\SolutionBoardGamesAssgnmt2\\BoardGames\\BoardGames.csproj",
+      "projectPath": "C:\\Users\\luisf\\OneDrive - Queensland University of Technology\\02Sem2\\IFN584 Obj Orient Des & Dev\\IFN584_Assignment2\\SolutionBoardGamesAssgnmt2\\BoardGames\\BoardGames.csproj",
       "packagesPath": "C:\\Users\\luisf\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\luisf\\OneDrive - Queensland University of Technology\\02Sem2\\IFN584 Obj Orient Des & Dev\\Assgmnt2\\SolutionBoardGamesAssgnmt2\\BoardGames\\obj\\",
+      "outputPath": "C:\\Users\\luisf\\OneDrive - Queensland University of Technology\\02Sem2\\IFN584 Obj Orient Des & Dev\\IFN584_Assignment2\\SolutionBoardGamesAssgnmt2\\BoardGames\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\luisf\\AppData\\Roaming\\NuGet\\NuGet.Config",

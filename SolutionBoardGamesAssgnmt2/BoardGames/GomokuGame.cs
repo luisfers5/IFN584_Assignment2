@@ -180,26 +180,49 @@ namespace BoardGames
         public GomokuComputer(string name, int symbol) : base(name, symbol) { }
 
         public override (int row, int col, int number) MakeMove(Board board)
+{
+    // Check for a winning move
+    for (int i = 0; i < board.Size; i++)
+    {
+        for (int j = 0; j < board.Size; j++)
         {
-            for (int i = 0; i < board.Size; i++)
-                for (int j = 0; j < board.Size; j++)
-                {
-                    if (!board.IsValidMove(i, j)) continue;
-                    board.Cells[i][j] = Symbol;                          // Try this move
-                    bool wins = CheckWin(board, i, j, Symbol);          // Check win
-                    board.Cells[i][j] = null;                            // Undo it
-                    if (wins) return (i, j, 0);                          // Pick this one
-                }
+            if (!board.IsValidMove(i, j)) continue;
+            board.Cells[i][j] = Symbol; // Try this move
+            bool wins = CheckWin(board, i, j, Symbol);
+            board.Cells[i][j] = null; // Undo it
+            if (wins) return (i, j, 0); // Play the winning move
+        }
+    }
 
-            var options = new List<(int, int)>();
-            for (int i = 0; i < board.Size; i++)
-                for (int j = 0; j < board.Size; j++)
-                    if (board.IsValidMove(i, j))
-                        options.Add((i, j));
+    // Check for a blocking move
+    int opponentSymbol = Symbol == 1 ? 2 : 1;
+    for (int i = 0; i < board.Size; i++)
+    {
+        for (int j = 0; j < board.Size; j++)
+        {
+            if (!board.IsValidMove(i, j)) continue;
+            board.Cells[i][j] = opponentSymbol; // Try opponent's move
+            bool opponentWins = CheckWin(board, i, j, opponentSymbol);
+            board.Cells[i][j] = null; // Undo it
+            if (opponentWins) return (i, j, 0); // Block the opponent's winning move
+        }
+    }
 
-            var (r, c) = options[rand.Next(options.Count)];             // Just pick random
-            return (r, c, 0);
-        } // End of MakeMove() method
+    // Fallback: Pick a random valid move
+    var options = new List<(int, int)>();
+    for (int i = 0; i < board.Size; i++)
+    {
+        for (int j = 0; j < board.Size; j++)
+        {
+            if (board.IsValidMove(i, j))
+                options.Add((i, j));
+        }
+    }
+
+    var (r, c) = options[rand.Next(options.Count)];
+    return (r, c, 0);
+}
+
 
         private bool CheckWin(Board board, int row, int col, int symbol)
         {
