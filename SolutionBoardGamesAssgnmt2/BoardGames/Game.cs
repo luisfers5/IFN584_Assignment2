@@ -6,7 +6,7 @@ using System.Text.Json;
 namespace BoardGames
 {
     // 1. Base class for all game types
-    abstract class Game
+    public abstract class Game
     {
         public Board Board { get; set; }                                 // Shared board for the game
         public Player Player1 { get; set; }                              // First player
