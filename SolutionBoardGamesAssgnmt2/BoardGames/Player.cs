@@ -14,7 +14,7 @@ namespace BoardGames
     [JsonDerivedType(typeof(NotaktoComputer), "notakto_computer")]
 
     // 1. Abstract base class for any type of player
-    abstract class Player
+    public abstract class Player
     {
         public string Name { get; set; }                                  // Player's name
 
