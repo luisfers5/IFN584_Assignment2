@@ -180,49 +180,99 @@ namespace BoardGames
         public GomokuComputer(string name, int symbol) : base(name, symbol) { }
 
         public override (int row, int col, int number) MakeMove(Board board)
-{
-    // Check for a winning move
-    for (int i = 0; i < board.Size; i++)
-    {
-        for (int j = 0; j < board.Size; j++)
         {
-            if (!board.IsValidMove(i, j)) continue;
-            board.Cells[i][j] = Symbol; // Try this move
-            bool wins = CheckWin(board, i, j, Symbol);
-            board.Cells[i][j] = null; // Undo it
-            if (wins) return (i, j, 0); // Play the winning move
-        }
-    }
+            // Check for a winning move
+            for (int i = 0; i < board.Size; i++)
+            {
+                for (int j = 0; j < board.Size; j++)
+                {
+                    if (!board.IsValidMove(i, j)) continue;
+                    board.Cells[i][j] = Symbol; // Try this move
+                    bool wins = CheckWin(board, i, j, Symbol);
+                    board.Cells[i][j] = null; // Undo it
+                    if (wins) return (i, j, 0); // Play the winning move
+                }
+            }
 
-    // Check for a blocking move
-    int opponentSymbol = Symbol == 1 ? 2 : 1;
-    for (int i = 0; i < board.Size; i++)
-    {
-        for (int j = 0; j < board.Size; j++)
+            // Check for a blocking move
+            int opponentSymbol = Symbol == 1 ? 2 : 1;
+            for (int i = 0; i < board.Size; i++)
+            {
+                for (int j = 0; j < board.Size; j++)
+                {
+                    if (!board.IsValidMove(i, j)) continue;
+                    board.Cells[i][j] = opponentSymbol; // Try opponent's move
+                    bool opponentWins = CheckWin(board, i, j, opponentSymbol);
+                    board.Cells[i][j] = null; // Undo it
+                    if (opponentWins) return (i, j, 0); // Block the opponent's winning move
+                }
+            }
+
+            // Look for moves that extend the computer's line
+            (int row, int col)? bestMove = null;
+            int maxLineLength = 0;
+            for (int i = 0; i < board.Size; i++)
+            {
+                for (int j = 0; j < board.Size; j++)
+                {
+                    if (!board.IsValidMove(i, j)) continue;
+                    board.Cells[i][j] = Symbol; // Try this move
+                    int lineLength = EvaluateLineLength(board, i, j, Symbol);
+                    board.Cells[i][j] = null; // Undo it
+                    if (lineLength > maxLineLength)
+                    {
+                        maxLineLength = lineLength;
+                        bestMove = (i, j);
+                    }
+                }
+            }
+
+            if (bestMove.HasValue) return (bestMove.Value.row, bestMove.Value.col, 0);
+
+            // Fallback: Pick a random valid move
+            var options = new List<(int, int)>();
+            for (int i = 0; i < board.Size; i++)
+            {
+                for (int j = 0; j < board.Size; j++)
+                {
+                    if (board.IsValidMove(i, j))
+                        options.Add((i, j));
+                }
+            }
+
+            var (r, c) = options[rand.Next(options.Count)];
+            return (r, c, 0);
+        }
+
+        // Helper method to evaluate the length of the line created by a move
+        private int EvaluateLineLength(Board board, int row, int col, int symbol)
         {
-            if (!board.IsValidMove(i, j)) continue;
-            board.Cells[i][j] = opponentSymbol; // Try opponent's move
-            bool opponentWins = CheckWin(board, i, j, opponentSymbol);
-            board.Cells[i][j] = null; // Undo it
-            if (opponentWins) return (i, j, 0); // Block the opponent's winning move
+            int Count(int dx, int dy)
+            {
+                int cnt = 0;
+                int x = row + dx, y = col + dy;
+                while (x >= 0 && x < board.Size &&
+                    y >= 0 && y < board.Size &&
+                    board.Cells[x][y] == symbol)
+                {
+                    cnt++;
+                    x += dx;
+                    y += dy;
+                }
+                return cnt;
+            }
+
+            return Math.Max(
+                Count(1, 0) + Count(-1, 0) + 1, // Horizontal
+                Math.Max(
+                    Count(0, 1) + Count(0, -1) + 1, // Vertical
+                    Math.Max(
+                        Count(1, 1) + Count(-1, -1) + 1, // Diagonal \
+                        Count(1, -1) + Count(-1, 1) + 1  // Diagonal /
+                    )
+                )
+            );
         }
-    }
-
-    // Fallback: Pick a random valid move
-    var options = new List<(int, int)>();
-    for (int i = 0; i < board.Size; i++)
-    {
-        for (int j = 0; j < board.Size; j++)
-        {
-            if (board.IsValidMove(i, j))
-                options.Add((i, j));
-        }
-    }
-
-    var (r, c) = options[rand.Next(options.Count)];
-    return (r, c, 0);
-}
-
 
         private bool CheckWin(Board board, int row, int col, int symbol)
         {

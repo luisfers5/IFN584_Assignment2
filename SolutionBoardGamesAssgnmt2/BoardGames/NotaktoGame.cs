@@ -403,8 +403,7 @@ namespace BoardGames
 
         public NotaktoComputer(string name) : base(name) { }  // pass name up
 
-        public override (int board, int row, int col) MakeMove(
-            List<Board> boards, HashSet<int> deadBoards)
+        public override (int board, int row, int col) MakeMove( List<Board> boards, HashSet<int> deadBoards)
         {
             var options = new List<(int board, int row, int col)>();  // possible moves
             for (int b = 0; b < boards.Count; b++)
@@ -425,14 +424,16 @@ namespace BoardGames
                 var (b, r, c) = opt;
                 boards[b].Cells[r][c] = 1;
                 bool killsLast = (deadBoards.Count
-                                  + (NotaktoGame.HasThreeInARowStatic(boards[b]) ? 1 : 0))
-                                 == boards.Count;
+                                    + (NotaktoGame.HasThreeInARowStatic(boards[b]) ? 1 : 0))
+                                    == boards.Count;
                 boards[b].Cells[r][c] = null;
                 if (!killsLast) return opt;  // choose safe move
             }
 
             return options[rand.Next(options.Count)];  // random fallback
         }
+
+
     } // End of NotaktoComputer class
 
 } // End of BoardGames namespace
