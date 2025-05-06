@@ -14,7 +14,7 @@ namespace BoardGames
         {
             Console.Clear();
             Console.WriteLine("Welcome to Board Games Suite");
-            Console.WriteLine("Developed by: Team XXXX\n");
+            Console.WriteLine("Developed by: Team 20\n");
         }
 
         private void ShowMainMenu()
@@ -247,6 +247,7 @@ namespace BoardGames
             {
                 ShowHeader();
                 Console.WriteLine($"Unexpected error: {ex.Message}");
+                Console.WriteLine($"Unexpected error: {ex}");
                 Console.WriteLine("Press Enter to return to the main menu...");
                 Console.ReadLine();
             }
