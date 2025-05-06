@@ -5,15 +5,15 @@ using static BoardGames.NumericalTTTGame;
 namespace BoardGames
 {
     // 1. Class Declaration
-    class ComputerPlayer : Player             // Computer-controlled player, inherits from Player
+    class NumericalTTTComputer : Player             // Computer-controlled player, inherits from Player
     {
         // 2. Random generator for fallback moves
         private Random rand = new Random();    // used to pick random cell or number
 
         // 3. Constructors
-        public ComputerPlayer() : base() { }   // default ctor, passes to base
+        public NumericalTTTComputer() : base() { }   // default ctor, passes to base
 
-        public ComputerPlayer(string name, List<int> numbers)
+        public NumericalTTTComputer(string name, List<int> numbers)
             : base(name, numbers) { }         // ctor with name and available numbers
 
         // 4. Move Logic
@@ -42,7 +42,7 @@ namespace BoardGames
                 }
             }
 
-            // 4b. No winning move found → pick random valid cell and number
+            // 4b. No winning move found -> pick random valid cell and number
             var freeCells = new List<(int row, int col)>();
             for (int i = 0; i < board.Size; i++)
                 for (int j = 0; j < board.Size; j++)
@@ -61,6 +61,6 @@ namespace BoardGames
             return (r, c, chosenNum);           // return random move
         } // End of MakeMove() method
 
-    } // End of ComputerPlayer class
+    } // End of NumericalTTTComputer class
 
 } // End of BoardGames namespace

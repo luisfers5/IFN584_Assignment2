@@ -6,8 +6,8 @@ namespace BoardGames
 {
     // Polymorphic setup for JSON serialization — tells the deserializer what type to load
     [JsonPolymorphic(TypeDiscriminatorPropertyName = "$type")]
-    [JsonDerivedType(typeof(HumanPlayer), "human")]
-    [JsonDerivedType(typeof(ComputerPlayer), "computer")]
+    [JsonDerivedType(typeof(NumericalTTTPlayer), "human")]
+    [JsonDerivedType(typeof(NumericalTTTComputer), "computer")]
     [JsonDerivedType(typeof(GomokuPlayer), "gomoku")]
     [JsonDerivedType(typeof(GomokuComputer), "gomoku_computer")]
     [JsonDerivedType(typeof(NotaktoPlayer), "notakto")]
