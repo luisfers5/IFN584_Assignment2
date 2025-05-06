@@ -6,115 +6,164 @@ namespace BoardGames
     // 1. GomokuGame class handles setup and gameplay
     class GomokuGame : Game
     {
+
+        // Constants
+        private const int MIN_BOARD_SIZE = 5;
+        private const int MAX_BOARD_SIZE = 15;
+        private const int WINNING_LINE_LENGTH = 5;
+        private const int PLAYER1_SYMBOL = 1; // X
+        private const int PLAYER2_SYMBOL = 2; // O
+
+        private const int CURRENT_PLAYER_INDEX = 1;
+        private const string INVALID_SIZE_MESSAGE = "Invalid input! Enter a number between 5 and 15";
+        private const string INVALID_MODE_MESSAGE = "Invalid input! Try again";
+        private const string INVALID_MOVE_MESSAGE = "Cell is taken or out of bounds. Please choose a different cell";
+        private const string PRESS_ENTER_MESSAGE = "Press Enter to return to the main menu...";
+        private const string COMPUTER_THINKING_MESSAGE = "\nComputer is thinking...";
+
+
         public static new Game SetupNewGame()
         {
-            Console.WriteLine("Enter board size (recommended 10–15):");
-            int size;
-            while (!int.TryParse(Console.ReadLine(), out size) || size < 5 || size > 15)
-            {
-                Console.WriteLine("Invalid input. Enter a number between 5 and 15.");
-            }
-
+            int boardSize = GetValidBoardSize();
             var game = new GomokuGame
             {
-                Board = new Board(size),
-                CurrentPlayerIndex = 1
+                Board = new Board(boardSize),
+                CurrentPlayerIndex = CURRENT_PLAYER_INDEX
             };
 
+            game.IsHumanVsComputer = GetGameMode();
+            game.Player1 = new GomokuPlayer("Player 1", PLAYER1_SYMBOL);
+
+            game.Player2 = game.IsHumanVsComputer
+                ? new GomokuComputer("Computer", PLAYER2_SYMBOL)
+                : new GomokuPlayer("Player 2", PLAYER2_SYMBOL);
+
+            return game;
+        }
+
+        private static int GetValidBoardSize()
+        {
+            Console.WriteLine($"Enter board size (recommended {MIN_BOARD_SIZE}–{MAX_BOARD_SIZE}):");
+            int size;
+            while (!int.TryParse(Console.ReadLine(), out size) || size < MIN_BOARD_SIZE || size > MAX_BOARD_SIZE)
+            {
+                Console.WriteLine(INVALID_SIZE_MESSAGE);
+            }
+            return size;
+        }
+
+        private static bool GetGameMode()
+        {
             Console.WriteLine("Select game mode:\n[1 vs 1] -> [1]\n[1 vs PC] -> [2]");
             string mode;
             while ((mode = Console.ReadLine()?.Trim()) != "1" && mode != "2")
             {
-                Console.WriteLine("Invalid input. Try again.");
+                Console.WriteLine(INVALID_MODE_MESSAGE);
             }
-
-            game.IsHumanVsComputer = (mode == "2");
-
-            game.Player1 = new GomokuPlayer("Player 1", 1);               // X
-            game.Player2 = game.IsHumanVsComputer
-                ? new GomokuComputer("Computer", 2)                       // O
-                : new GomokuPlayer("Player 2", 2);
-
-            return game;
-        } // End of SetupNewGame() method
+            return mode == "2";
+        }
 
         // 2. Handles move logic and checks win/tie
         protected override bool TryApplyMove()
         {
-            var human = (GomokuPlayer)GetCurrentPlayer();                // Cast to GomokuPlayer
-            var (hRow, hCol, _) = human.MakeMove(Board);                 // Get human move
+            // Cast to GomokuPlayer
+            var currentPlayer = (GomokuPlayer)GetCurrentPlayer();
+            // Get human move
+            var (row, col, _) = currentPlayer.MakeMove(Board);
 
-            if (!Board.IsValidMove(hRow, hCol))
+            if (TryPlaceMove(row, col, currentPlayer.Symbol))
+                return true;
+
+            return HandleGameState(currentPlayer, row, col);
+        }
+
+        private bool TryPlaceMove(int row, int col, int symbol)
+        {
+            if (!Board.IsValidMove(row, col))
             {
-                Console.WriteLine("Cell is taken or out of bounds. Please choose a different cell.");
+                Console.WriteLine(INVALID_MOVE_MESSAGE);
                 Console.WriteLine("Press Enter to try again...");
                 Console.ReadLine();
-                return true;                                             // Just retry input
+                return true;
             }
 
-            Board.Cells[hRow][hCol] = human.Symbol;                      // Place symbol on board
+            Board.Cells[row][col] = symbol;
+            return false;
+        }
 
-            if (CheckGomokuWin(hRow, hCol, human.Symbol))               // Check win
+        private bool HandleGameState(GomokuPlayer player, int row, int col)
+        {
+            if (CheckGomokuWin(row, col, player.Symbol, player))
             {
-                Console.Clear();
-                Board.Display();
-                Console.WriteLine($"\n {human.Name} wins!");
-                Console.WriteLine("Press Enter to return to the main menu...");
-                Console.ReadLine();
-                return false;                                            // Game over
-            }
-
-            if (Board.IsBoardFull())                                     // Tie check
-            {
-                Console.Clear();
-                Board.Display();
-                Console.WriteLine("\nIt's a tie!");
-                Console.WriteLine("Press Enter to return to the main menu...");
-                Console.ReadLine();
                 return false;
             }
 
-            SwitchPlayer();                                              // Next player
-
-            if (IsHumanVsComputer && GetCurrentPlayer() is GomokuComputer comp)
+            if (IsTie())
             {
-                Console.WriteLine("\nComputer is thinking...");
-                var (cRow, cCol, _) = comp.MakeMove(Board);
-                Board.Cells[cRow][cCol] = comp.Symbol;
-
-                if (CheckGomokuWin(cRow, cCol, comp.Symbol))
-                {
-                    Console.Clear();
-                    Board.Display();
-                    Console.WriteLine($"\n{comp.Name} wins!");
-                    Console.WriteLine("Press Enter to return to the main menu...");
-                    Console.ReadLine();
-                    return false;
-                }
-
-                if (Board.IsBoardFull())                                 // Tie check again
-                {
-                    Console.Clear();
-                    Board.Display();
-                    Console.WriteLine("\nIt's a tie!");
-                    Console.WriteLine("Press Enter to return to the main menu...");
-                    Console.ReadLine();
-                    return false;
-                }
-
-                SwitchPlayer();                                          // Back to human
+                return false;
             }
 
-            return true;                                                 // Keep game running
-        } // End of TryApplyMove() method
+            SwitchPlayer();
+            return HandleComputerMove();
+        }
+
+        private bool HandleComputerMove()
+        {
+            if (IsHumanVsComputer && GetCurrentPlayer() is GomokuComputer comp)
+            {
+                Console.WriteLine(COMPUTER_THINKING_MESSAGE);
+                var (row, col, _) = comp.MakeMove(Board);
+                Board.Cells[row][col] = comp.Symbol;
+
+                if (CheckGomokuWin(row, col, comp.Symbol, comp))
+                {
+                    return false;
+                }
+
+                if (IsTie())
+                {
+                    return false;
+                }
+
+                SwitchPlayer();
+            }
+            return true;
+        }
+
+        private bool IsTie()
+        {
+            if (Board.IsBoardFull())
+            {
+                DisplayGameResult("It's a tie!");
+                return true;
+            }
+            return false;
+        }
+
+        private void DisplayGameResult(string message)
+        {
+            Console.Clear();
+            Board.Display();
+            Console.WriteLine($"\n{message}");
+            Console.WriteLine(PRESS_ENTER_MESSAGE);
+            Console.ReadLine();
+        }
+
 
         // 3. Checks all directions from a move for 5-in-a-row
-        private bool CheckGomokuWin(int row, int col, int symbol)
+        private bool CheckGomokuWin(int row, int col, int symbol, GomokuPlayer player)
         {
-            return CheckLine(row, col, symbol, 1, 0) ||                  // Horizontal
+            if (CheckLine(row, col, symbol, 1, 0) ||                    // Horizontal
                    CheckLine(row, col, symbol, 0, 1) ||                  // Vertical
                    CheckLine(row, col, symbol, 1, 1) ||                  // Diagonal \
-                   CheckLine(row, col, symbol, 1, -1);                   // Diagonal /
+                   CheckLine(row, col, symbol, 1, -1))                  // Diagonal /
+
+            {
+                DisplayGameResult($"{player.Name} wins!");
+                return true;
+
+            }
+            return false;
         }
 
         // 4. Checks both directions along a line
@@ -143,158 +192,5 @@ namespace BoardGames
         }
     }
 
-    // 6. Human player class for Gomoku
-    class GomokuPlayer : Player
-    {
-        public int Symbol { get; }
 
-        public GomokuPlayer(string name, int symbol) : base(name, null)
-        {
-            Symbol = symbol;
-        }
-
-        public override (int row, int col, int number) MakeMove(Board board)
-        {
-            Console.WriteLine($"{Name}, enter move as: row col (for example 2 2, separated by space)");
-            while (true)
-            {
-                var parts = Console.ReadLine()?.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-                if (parts?.Length == 2 &&
-                    int.TryParse(parts[0], out int row) &&
-                    int.TryParse(parts[1], out int col) &&
-                    row >= 0 && row < board.Size &&
-                    col >= 0 && col < board.Size)
-                {
-                    return (row, col, 0);                                // We ignore 'number' for Gomoku
-                }
-                Console.WriteLine("Invalid input. Format: row col (e.g., 4 7)");
-            }
-        }
-    }
-
-    // 7. Computer player logic for Gomoku
-    class GomokuComputer : GomokuPlayer
-    {
-        private Random rand = new();
-
-        public GomokuComputer(string name, int symbol) : base(name, symbol) { }
-
-        public override (int row, int col, int number) MakeMove(Board board)
-        {
-            // Check for a winning move
-            for (int i = 0; i < board.Size; i++)
-            {
-                for (int j = 0; j < board.Size; j++)
-                {
-                    if (!board.IsValidMove(i, j)) continue;
-                    board.Cells[i][j] = Symbol; // Try this move
-                    bool wins = CheckWin(board, i, j, Symbol);
-                    board.Cells[i][j] = null; // Undo it
-                    if (wins) return (i, j, 0); // Play the winning move
-                }
-            }
-
-            // Check for a blocking move
-            int opponentSymbol = Symbol == 1 ? 2 : 1;
-            for (int i = 0; i < board.Size; i++)
-            {
-                for (int j = 0; j < board.Size; j++)
-                {
-                    if (!board.IsValidMove(i, j)) continue;
-                    board.Cells[i][j] = opponentSymbol; // Try opponent's move
-                    bool opponentWins = CheckWin(board, i, j, opponentSymbol);
-                    board.Cells[i][j] = null; // Undo it
-                    if (opponentWins) return (i, j, 0); // Block the opponent's winning move
-                }
-            }
-
-            // Look for moves that extend the computer's line
-            (int row, int col)? bestMove = null;
-            int maxLineLength = 0;
-            for (int i = 0; i < board.Size; i++)
-            {
-                for (int j = 0; j < board.Size; j++)
-                {
-                    if (!board.IsValidMove(i, j)) continue;
-                    board.Cells[i][j] = Symbol; // Try this move
-                    int lineLength = EvaluateLineLength(board, i, j, Symbol);
-                    board.Cells[i][j] = null; // Undo it
-                    if (lineLength > maxLineLength)
-                    {
-                        maxLineLength = lineLength;
-                        bestMove = (i, j);
-                    }
-                }
-            }
-
-            if (bestMove.HasValue) return (bestMove.Value.row, bestMove.Value.col, 0);
-
-            // Fallback: Pick a random valid move
-            var options = new List<(int, int)>();
-            for (int i = 0; i < board.Size; i++)
-            {
-                for (int j = 0; j < board.Size; j++)
-                {
-                    if (board.IsValidMove(i, j))
-                        options.Add((i, j));
-                }
-            }
-
-            var (r, c) = options[rand.Next(options.Count)];
-            return (r, c, 0);
-        }
-
-        // Helper method to evaluate the length of the line created by a move
-        private int EvaluateLineLength(Board board, int row, int col, int symbol)
-        {
-            int Count(int dx, int dy)
-            {
-                int cnt = 0;
-                int x = row + dx, y = col + dy;
-                while (x >= 0 && x < board.Size &&
-                    y >= 0 && y < board.Size &&
-                    board.Cells[x][y] == symbol)
-                {
-                    cnt++;
-                    x += dx;
-                    y += dy;
-                }
-                return cnt;
-            }
-
-            return Math.Max(
-                Count(1, 0) + Count(-1, 0) + 1, // Horizontal
-                Math.Max(
-                    Count(0, 1) + Count(0, -1) + 1, // Vertical
-                    Math.Max(
-                        Count(1, 1) + Count(-1, -1) + 1, // Diagonal \
-                        Count(1, -1) + Count(-1, 1) + 1  // Diagonal /
-                    )
-                )
-            );
-        }
-
-        private bool CheckWin(Board board, int row, int col, int symbol)
-        {
-            int Count(int dx, int dy)
-            {
-                int cnt = 0;
-                int x = row + dx, y = col + dy;
-                while (x >= 0 && x < board.Size &&
-                       y >= 0 && y < board.Size &&
-                       board.Cells[x][y] == symbol)
-                {
-                    cnt++;
-                    x += dx;
-                    y += dy;
-                }
-                return cnt;
-            }
-
-            return (Count(1, 0) + Count(-1, 0) + 1 >= 5) ||             // Horizontal
-                   (Count(0, 1) + Count(0, -1) + 1 >= 5) ||             // Vertical
-                   (Count(1, 1) + Count(-1, -1) + 1 >= 5) ||            // Diagonal \
-                   (Count(1, -1) + Count(-1, 1) + 1 >= 5);              // Diagonal /
-        }
-    }
 }
