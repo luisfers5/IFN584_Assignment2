@@ -103,7 +103,7 @@ namespace BoardGames
             SwitchPlayer();                                             // Flip turn to other player
 
             // Auto-move if it's the computer's turn
-            if (GetCurrentPlayer() is ComputerPlayer comp)
+            if (GetCurrentPlayer() is NumericalTTTComputer comp)
             {
                 Console.WriteLine("\nComputer is thinking...");
                 var compMove = comp.MakeMove(Board);

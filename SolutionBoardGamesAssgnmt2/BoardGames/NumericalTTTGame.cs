@@ -3,42 +3,129 @@ using System.Collections.Generic;
 
 namespace BoardGames
 {
-    // 1. Numerical Tic-Tac-Toe game class
     class NumericalTTTGame : Game
     {
-        // Static setup method called from Program
+        // Constants for messages and settings
+        private const string BOARD_SIZE_PROMPT = "Enter board size n (for an NxN board): ";
+        private const string INVALID_SIZE_MESSAGE = "Invalid input. Please enter a positive integer";
+        private const string GAME_MODE_PROMPT = "Select game mode:\n[1 vs 1] -> [1]\n[1 vs PC] -> [2]";
+        private const string INVALID_MODE_MESSAGE = "Invalid input. Try again";
+        private const string INVALID_MOVE_MESSAGE = "Invalid move. Press Enter...";
+        private const string COMPUTER_THINKING_MESSAGE = "\nComputer is thinking...";
+        private const string TIE_MESSAGE = "\nIt's a tie!";
+        private const string RETURN_TO_MENU_MESSAGE = "Press Enter to return to the main menu...";
+        private const string HUMAN_MODE = "1";
+        private const string COMPUTER_MODE = "2";
+
+        // Constants for line types in SumLine
+        private const string LINE_TYPE_ROW = "row";
+        private const string LINE_TYPE_COLUMN = "column";
+        private const string LINE_TYPE_MAIN_DIAGONAL = "main_diagonal";
+        private const string LINE_TYPE_ANTI_DIAGONAL = "anti_diagonal";
+
+        // Static setup method
         public static new Game SetupNewGame()
         {
-            int size;
-            while (true)
-            {
-                Console.WriteLine("Enter board size n (for an NxN board): ");
-                string input = Console.ReadLine();
-                if (int.TryParse(input, out size) && size > 0)
-                {
-                    Console.Clear();
-                    break;
-                }
-                Console.WriteLine("Invalid input. Please enter a positive integer.");
-            }
+            int size = GetValidBoardSize();
+            bool isHumanVsComputer = GetValidGameMode();
 
             var newGame = new NumericalTTTGame
             {
-                Board = new Board(size)
+                Board = new Board(size),
+                IsHumanVsComputer = isHumanVsComputer,
+                CurrentPlayerIndex = 1
             };
 
-            Console.WriteLine("Select game mode:\n[1 vs 1] -> [1]\n[1 vs PC] -> [2]");
-            string mode;
-            while ((mode = Console.ReadLine()) != "1" && mode != "2")
+            (List<int> odds, List<int> evens) = InitializeNumberPools(size);
+            newGame.Player1 = new NumericalTTTPlayer("Player 1", odds);
+            newGame.Player2 = isHumanVsComputer
+                ? new NumericalTTTComputer("Computer", evens)
+                : new NumericalTTTPlayer("Player 2", evens);
+
+            return newGame;
+        }
+
+        // Override the move-applying logic
+        protected override bool TryApplyMove()
+        {
+            var player = GetCurrentPlayer();
+            if (!ApplyAndValidateMove(player))
+                return false;
+
+            if (HandleGameEnd(player))
+                return false;
+
+            if (IsHumanVsComputer && GetCurrentPlayer() is NumericalTTTComputer comp)
             {
-                Console.Clear();
-                Console.WriteLine("Invalid input. Try again.");
-                Console.WriteLine("Select game mode:\n[1 vs 1] -> [1]\n[1 vs PC] -> [2]");
+                Console.WriteLine(COMPUTER_THINKING_MESSAGE);
+                if (!ApplyAndValidateMove(comp))
+                    return false;
+
+                if (HandleGameEnd(comp))
+                    return false;
             }
 
-            newGame.IsHumanVsComputer = (mode == "2");
+            return true;
+        }
 
-            // Prepare number pools
+        // Instance helper: delegates to static win checker
+        private bool CheckWin() => CheckWinStatic(Board);
+
+        // Static win detection
+        public static bool CheckWinStatic(Board board)
+        {
+            int n = board.Size;
+            int winSum = n * (n * n + 1) / 2;
+
+            // Check rows
+            for (int i = 0; i < n; i++)
+                if (SumLine(board, LINE_TYPE_ROW, i) == winSum)
+                    return true;
+
+            // Check columns
+            for (int j = 0; j < n; j++)
+                if (SumLine(board, LINE_TYPE_COLUMN, j) == winSum)
+                    return true;
+
+            // Check diagonals
+            if (SumLine(board, LINE_TYPE_MAIN_DIAGONAL, 0) == winSum)
+                return true;
+            if (SumLine(board, LINE_TYPE_ANTI_DIAGONAL, 0) == winSum)
+                return true;
+
+            return false;
+        }
+
+        // Helper methods
+        private static int GetValidBoardSize()
+        {
+            while (true)
+            {
+                Console.WriteLine(BOARD_SIZE_PROMPT);
+                if (int.TryParse(Console.ReadLine(), out int size) && size > 0)
+                {
+                    Console.Clear();
+                    return size;
+                }
+                Console.WriteLine(INVALID_SIZE_MESSAGE);
+            }
+        }
+
+        private static bool GetValidGameMode()
+        {
+            Console.WriteLine(GAME_MODE_PROMPT);
+            string mode;
+            while ((mode = Console.ReadLine()) != HUMAN_MODE && mode != COMPUTER_MODE)
+            {
+                Console.Clear();
+                Console.WriteLine(INVALID_MODE_MESSAGE);
+                Console.WriteLine(GAME_MODE_PROMPT);
+            }
+            return mode == COMPUTER_MODE;
+        }
+
+        private static (List<int> odds, List<int> evens) InitializeNumberPools(int size)
+        {
             var allNumbers = new List<int>();
             for (int i = 1; i <= size * size; i++)
                 allNumbers.Add(i);
@@ -47,148 +134,92 @@ namespace BoardGames
             var evens = new List<int>();
             foreach (int num in allNumbers)
             {
-                if (num % 2 == 0) evens.Add(num);
-                else odds.Add(num);
+                if (num % 2 == 0)
+                    evens.Add(num);
+                else
+                    odds.Add(num);
             }
+            return (odds, evens);
+        }
 
-            newGame.Player1 = new HumanPlayer("Player 1", odds);
-            newGame.Player2 = newGame.IsHumanVsComputer
-                ? new ComputerPlayer("Computer", evens)
-                : new HumanPlayer("Player 2", evens);
-
-            newGame.CurrentPlayerIndex = 1;
-            return newGame;
-        } // End of SetupNewGame() method
-
-        // 2. Override the move-applying logic so it lives here instead of in Board
-        protected override bool TryApplyMove()
+        private bool ApplyAndValidateMove(Player player)
         {
-            var player = GetCurrentPlayer();
             var (row, col, number) = player.MakeMove(Board);
-
-            // Place the number
             if (!Board.PlaceNumber(row, col, number))
             {
-                Console.WriteLine("Invalid move. Press Enter...");
-                Console.ReadLine();
+                DisplayMessageAndPause(INVALID_MOVE_MESSAGE);
                 return false;
             }
+            SwitchPlayer();
+            return true;
+        }
 
-            // Check if human just won
+        private bool HandleGameEnd(Player player)
+        {
             if (CheckWin())
             {
                 Console.Clear();
                 Board.Display();
                 Console.WriteLine($"\n{player.Name} wins!");
-                Console.WriteLine("Press Enter to return to the main menu...");
-                Console.ReadLine();
-                return false;
+                DisplayMessageAndPause(RETURN_TO_MENU_MESSAGE);
+                return true;
             }
 
-            // Check for tie
             if (Board.IsBoardFull())
             {
                 Console.Clear();
                 Board.Display();
-                Console.WriteLine("\nIt's a tie!");
-                Console.WriteLine("Press Enter to return to the main menu...");
-                Console.ReadLine();
-                return false;
+                Console.WriteLine(TIE_MESSAGE);
+                DisplayMessageAndPause(RETURN_TO_MENU_MESSAGE);
+                return true;
             }
 
-            // Switch to next player
-            SwitchPlayer();
+            return false;
+        }
 
-            // Computer move if needed
-            if (IsHumanVsComputer && GetCurrentPlayer() is ComputerPlayer comp)
-            {
-                Console.WriteLine("\nComputer is thinking...");
-                var (cr, cc, cnum) = comp.MakeMove(Board);
-                Board.PlaceNumber(cr, cc, cnum);
-
-                // Computer win?
-                if (CheckWin())
-                {
-                    Console.Clear();
-                    Board.Display();
-                    Console.WriteLine($"\n{comp.Name} wins!");
-                    Console.WriteLine("Press Enter to return to the main menu...");
-                    Console.ReadLine();
-                    return false;
-                }
-
-                // Computer tie?
-                if (Board.IsBoardFull())
-                {
-                    Console.Clear();
-                    Board.Display();
-                    Console.WriteLine("\nIt's a tie!");
-                    Console.WriteLine("Press Enter to return to the main menu...");
-                    Console.ReadLine();
-                    return false;
-                }
-
-                // Back to human
-                SwitchPlayer();
-            }
-
-            return true;
-        } // End of TryApplyMove() method
-
-        // 3. Instance helper: delegates to static win checker
-        private bool CheckWin()
-            => CheckWinStatic(Board);
-
-        // 4. Static win detection (magic sum across rows, columns, diagonals)
-        public static bool CheckWinStatic(Board board)
+        private static void DisplayMessageAndPause(string message)
         {
-            int n = board.Size;
-            int winSum = n * (n * n + 1) / 2;                   // Magic square sum
+            Console.WriteLine(message);
+            Console.ReadLine();
+        }
 
-            // Check rows
-            for (int i = 0; i < n; i++)
+        private static int SumLine(Board board, string lineType, int index)
+        {
+            int sum = 0;
+            bool full = true;
+            for (int i = 0; i < board.Size; i++)
             {
-                int sum = 0;
-                bool full = true;
-                for (int j = 0; j < n; j++)
+                int row, col;
+                switch (lineType)
                 {
-                    if (board.Cells[i][j] == null) { full = false; break; }
-                    sum += board.Cells[i][j].Value;
+                    case LINE_TYPE_ROW:
+                        row = index;
+                        col = i;
+                        break;
+                    case LINE_TYPE_COLUMN:
+                        row = i;
+                        col = index;
+                        break;
+                    case LINE_TYPE_MAIN_DIAGONAL:
+                        row = i;
+                        col = i;
+                        break;
+                    case LINE_TYPE_ANTI_DIAGONAL:
+                        row = i;
+                        col = board.Size - 1 - i;
+                        break;
+                    default:
+                        throw new ArgumentException("Invalid line type");
                 }
-                if (full && sum == winSum) return true;
-            }
 
-            // Check columns
-            for (int j = 0; j < n; j++)
-            {
-                int sum = 0;
-                bool full = true;
-                for (int i = 0; i < n; i++)
+                if (board.Cells[row][col] == null)
                 {
-                    if (board.Cells[i][j] == null) { full = false; break; }
-                    sum += board.Cells[i][j].Value;
+                    full = false;
+                    break;
                 }
-                if (full && sum == winSum) return true;
+                sum += board.Cells[row][col].Value;
             }
-
-            // Check diagonal (top-left to bottom-right)
-            int d1 = 0; bool ok1 = true;
-            for (int i = 0; i < n; i++)
-            {
-                if (board.Cells[i][i] == null) { ok1 = false; break; }
-                d1 += board.Cells[i][i].Value;
-            }
-            if (ok1 && d1 == winSum) return true;
-
-            // Check diagonal (top-right to bottom-left)
-            int d2 = 0; bool ok2 = true;
-            for (int i = 0; i < n; i++)
-            {
-                if (board.Cells[i][n - 1 - i] == null) { ok2 = false; break; }
-                d2 += board.Cells[i][n - 1 - i].Value;
-            }
-
-            return ok2 && d2 == winSum;
-        } // End of CheckWinStatic() method
+            return full ? sum : 0;
+        }
     }
 }

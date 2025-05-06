@@ -4,12 +4,12 @@ using System.Collections.Generic;
 namespace BoardGames
 {
     // 1. Class Declaration
-    class HumanPlayer : Player   // human-controlled player, inherits shared Player behavior
+    class NumericalTTTPlayer : Player   // human-controlled player, inherits shared Player behavior
     {
         // 2. Constructors
-        public HumanPlayer() : base() { }                          // default ctor passes to base
+        public NumericalTTTPlayer() : base() { }                          // default ctor passes to base
 
-        public HumanPlayer(string name, List<int> numbers)        // custom ctor takes name and available numbers
+        public NumericalTTTPlayer(string name, List<int> numbers)        // custom ctor takes name and available numbers
             : base(name, numbers) { }
 
         // 3. Move Logic
