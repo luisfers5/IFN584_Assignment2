@@ -4,93 +4,97 @@ using System.Text.Json;
 
 namespace BoardGames
 {
-    // 1. Class Declaration
-    class NotaktoGame : Game   // define NotaktoGame as subclass of Game
+    class NotaktoGame : Game
     {
-        // 2. Public properties
-        public List<Board> Boards { get; set; }           // list of all boards
-        public HashSet<int> DeadBoards { get; set; }      // indexes of boards that are dead
+        // Constants for messages and settings
+        private const string BOARD_SIZE_MESSAGE = "Notakto only uses 3x3 boards. Board size set to 3.\n";
+        private const string BOARD_COUNT_PROMPT = "How many boards? (recommended: 3):";
+        private const string INVALID_BOARD_COUNT_MESSAGE = "Enter between 1 and 5 boards.";
+        private const string GAME_MODE_PROMPT = "Select game mode:\n[1] Human vs Human\n[2] Human vs Computer";
+        private const string INVALID_MODE_MESSAGE = "Invalid input. Try again.";
+        private const string COMMANDS_MESSAGE = "Commands: move | save | undo | redo | help | quit";
+        private const string MOVE_PROMPT = "Enter your move as: board row col (for example 0 1 1)";
+        private const string INVALID_MOVE_MESSAGE = "Invalid move. Press Enter...";
+        private const string DEAD_BOARD_MESSAGE = "That board is no longer playable. Press Enter...";
+        private const string INVALID_FILENAME_MESSAGE = "Invalid filename. Press Enter...";
+        private const string SAVE_FILENAME_PROMPT = "Enter filename to save (e.g., mygame): ";
+        private const string UNKNOWN_COMMAND_MESSAGE = "Unknown command. Press Enter...";
+        private const string NO_UNDO_MESSAGE = "Nothing to undo. Press Enter...";
+        private const string NO_REDO_MESSAGE = "Nothing to redo. Press Enter...";
+        private const string UNDO_SUCCESS_MESSAGE = "Undo successful. Press Enter...";
+        private const string REDO_SUCCESS_MESSAGE = "Redo successful. Press Enter...";
+        private const string RETURN_TO_MENU_MESSAGE = "Press Enter to return to the main menu...";
+        private const string QUIT_MESSAGE = "Returning to main menu...";
+        private const string HELP_CONTINUE_MESSAGE = "\nPress Enter to continue...";
+        private const string JSON_EXTENSION = ".json";
+        private const int MIN_BOARDS = 1;
+        private const int MAX_BOARDS = 5;
+        private const int BOARD_SIZE = 3;
+        private const string HUMAN_MODE = "1";
+        private const string COMPUTER_MODE = "2";
 
-        // 3. Undo/Redo stacks (not serialized)
-        private Stack<string> UndoStack { get; set; } = new();  // JSON snapshots for undo
-        private Stack<string> RedoStack { get; set; } = new();  // JSON snapshots for redo
 
-        // 4. Constructor
-        public NotaktoGame()                               // initialize new game instance
+        // Public properties
+        public List<Board> Boards { get; set; }
+        public HashSet<int> DeadBoards { get; set; }
+
+        // Undo/Redo stacks (not serialized)
+        private Stack<string> UndoStack { get; set; } = new();
+        private Stack<string> RedoStack { get; set; } = new();
+
+        // Constructor
+        public NotaktoGame()
         {
-            Boards = new List<Board>();                // start with empty board list
-            DeadBoards = new HashSet<int>();               // no dead boards yet
+            Boards = new List<Board>();
+            DeadBoards = new HashSet<int>();
         }
 
-        // 5. Game Setup
-        public static new Game SetupNewGame()              // ask user for settings, return configured game
+        // Game Setup
+        public static new Game SetupNewGame()
         {
-            const int size = 3;                           // fixed board size for Notakto
-            Console.Clear();                              // clear console
-            Console.WriteLine("Notakto only uses 3x3 boards. Board size set to 3.\n");
-            Console.WriteLine("How many boards? (recommended: 3):");
+            Console.Clear();
+            Console.WriteLine(BOARD_SIZE_MESSAGE);
+            int boardCount = GetValidBoardCount();
+            bool isHumanVsComputer = GetValidGameMode();
 
-            int boardCount;                               // to store user input
-            while (!int.TryParse(Console.ReadLine(), out boardCount)
-                   || boardCount < 1 || boardCount > 5)   // ensure between 1 and 5
-            {
-                Console.Clear();                          // re-prompt
-                Console.WriteLine("Enter between 1 and 5 boards.");
-            }
-
-            Console.Clear();                              // move on to mode selection
-            Console.WriteLine("Select game mode:\n[1] Human vs Human\n[2] Human vs Computer");
-
-            string mode;                                  // user choice
-            while ((mode = Console.ReadLine()?.Trim()) != "1"
-                   && mode != "2")                        // accept only "1" or "2"
-            {
-                Console.Clear();                          // re-prompt
-                Console.WriteLine("Invalid input. Try again.");
-                Console.WriteLine("Select game mode:\n[1] Human vs Human\n[2] Human vs Computer");
-            }
-
-            // instantiate and initialize game object
             var game = new NotaktoGame
             {
-                Boards = new List<Board>(),   // reset boards list
-                DeadBoards = new HashSet<int>(),  // reset dead set
-                IsHumanVsComputer = mode == "2",         // set AI flag
-                CurrentPlayerIndex = 1                    // start with player 1
+                Boards = new List<Board>(),
+                DeadBoards = new HashSet<int>(),
+                IsHumanVsComputer = isHumanVsComputer,
+                CurrentPlayerIndex = 1
             };
 
-            for (int i = 0; i < boardCount; i++)         // add each board
-                game.Boards.Add(new Board(size));        // each is 3×3
+            for (int i = 0; i < boardCount; i++)
+                game.Boards.Add(new Board(BOARD_SIZE));
 
-            game.Player1 = new NotaktoPlayer("Player 1");    // first player
-            game.Player2 = game.IsHumanVsComputer
-                        ? new NotaktoComputer("Computer")    // AI opponent
-                        : new NotaktoPlayer("Player 2");     // human opponent
+            game.Player1 = new NotaktoPlayer("Player 1");
+            game.Player2 = isHumanVsComputer
+                ? new NotaktoComputer("Computer")
+                : new NotaktoPlayer("Player 2");
 
-            return game;                                     // return configured game
-        } // End of SetupNewGame() method
+            return game;
+        }
 
-        // 6. Main Game Loop
-        public override void Start()                     // run the game until quit
+        // Main Game Loop
+        public override void Start()
         {
-            SaveSnapshot();                              // save initial state
-
-            while (true)                                 // loop for each turn
+            SaveSnapshot();
+            while (true)
             {
-                Console.Clear();                         // clear screen
-                DisplayBoards();                         // show current boards
+                Console.Clear();
+                DisplayBoards();
                 Console.WriteLine($"{GetCurrentPlayer().Name}'s turn.");
-                Console.WriteLine("Commands: move | save | undo | redo | help | quit");
+                Console.WriteLine(COMMANDS_MESSAGE);
                 Console.Write("Enter command: ");
                 string input = Console.ReadLine()?.Trim().ToLower();
 
-                switch (input)                           // handle user command
+                switch (input)
                 {
                     case "move":
-                        if (!TryApplyHumanMove()) return;  // human move, exit if game over
+                        if (!TryApplyHumanMove()) return;
                         SaveSnapshot();
-
-                        if (IsHumanVsComputer)            // if vs. computer
+                        if (IsHumanVsComputer)
                         {
                             if (!TryApplyComputerMove()) return;
                             SaveSnapshot();
@@ -98,19 +102,7 @@ namespace BoardGames
                         break;
 
                     case "save":
-                        Console.Write("Enter filename to save (e.g., mygame): ");
-                        string filename = Console.ReadLine()?.Trim();
-                        if (string.IsNullOrWhiteSpace(filename))
-                        {
-                            Console.WriteLine("Invalid filename. Press Enter...");
-                            Console.ReadLine();
-                            break;
-                        }
-                        if (!filename.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
-                            filename += ".json";
-                        SaveGame(filename);
-                        Console.WriteLine($"Game saved to '{filename}'. Press Enter...");
-                        Console.ReadLine();
+                        HandleSaveGame();
                         break;
 
                     case "undo":
@@ -123,86 +115,46 @@ namespace BoardGames
 
                     case "help":
                         ShowHelp();
-                        Console.WriteLine("\nPress Enter to continue...");
-                        Console.ReadLine();
+                        DisplayMessageAndPause(HELP_CONTINUE_MESSAGE);
                         break;
 
                     case "quit":
-                        Console.WriteLine("Returning to main menu...");
+                        Console.WriteLine(QUIT_MESSAGE);
                         return;
 
                     default:
-                        Console.WriteLine("Unknown command. Press Enter...");
-                        Console.ReadLine();
+                        DisplayMessageAndPause(UNKNOWN_COMMAND_MESSAGE);
                         break;
                 }
             }
-        } // End of Start() method
+        }
 
-        // 7. Handle human move
+        // Handle human move
         private bool TryApplyHumanMove()
         {
-            Console.WriteLine("Enter your move as: board row col (for example 0 1 1)");
+            Console.WriteLine(MOVE_PROMPT);
             var player = (NotaktoPlayer)GetCurrentPlayer();
             var (boardIndex, row, col) = player.MakeMove(Boards);
 
-            if (DeadBoards.Contains(boardIndex))
-            {
-                Console.WriteLine("That board is no longer playable. Press Enter...");
-                Console.ReadLine();
+            if (!ValidateMove(boardIndex, row, col, player.Name))
                 return true;
-            }
 
-            if (!Boards[boardIndex].IsValidMove(row, col))
-            {
-                Console.WriteLine("Invalid move. Press Enter...");
-                Console.ReadLine();
-                return true;
-            }
-
-            Boards[boardIndex].Cells[row][col] = 1;       // place X
-            if (HasThreeInARow(Boards[boardIndex]))
-                DeadBoards.Add(boardIndex);               // mark board dead
-
-            if (DeadBoards.Count == Boards.Count)         // all boards dead?
-            {
-                Console.Clear();
-                DisplayBoards();
-                Console.WriteLine($"{player.Name} loses! You completed the last playable move.");
-                Console.WriteLine("Press Enter to return to the main menu...");
-                Console.ReadLine();
-                return false;
-            }
-
-            SwitchPlayer();                              // switch turn
-            return true;
+            return ApplyMoveAndCheckEnd(boardIndex, row, col, player.Name);
         }
 
-        // 8. Handle computer move
+        // Handle computer move
         private bool TryApplyComputerMove()
         {
             var computer = (NotaktoComputer)GetCurrentPlayer();
             var (boardIndex, row, col) = computer.MakeMove(Boards, DeadBoards);
 
-            Boards[boardIndex].Cells[row][col] = 1;       // place X
-            if (HasThreeInARow(Boards[boardIndex]))
-                DeadBoards.Add(boardIndex);               // mark dead
+            if (!ValidateMove(boardIndex, row, col, computer.Name))
+                return true;
 
-            if (DeadBoards.Count == Boards.Count)         // all boards dead?
-            {
-                Console.Clear();
-                DisplayBoards();
-                Console.WriteLine("Computer loses! It completed the last playable move.");
-                Console.WriteLine("Press Enter to return to the main menu...");
-                Console.ReadLine();
-                return false;
-            }
-
-            SwitchPlayer();                              // switch turn
-            return true;
+            return ApplyMoveAndCheckEnd(boardIndex, row, col, computer.Name);
         }
 
-        // 9. Display all boards
+        // Display all boards
         private void DisplayBoards()
         {
             for (int i = 0; i < Boards.Count; i++)
@@ -214,60 +166,14 @@ namespace BoardGames
             }
         }
 
-        // 10. Display single board
+        // Display single board
         private void DisplayNotaktoBoard(Board board, bool isDead)
         {
-            int size = board.Size;
-            var winningCells = new HashSet<(int, int)>();
+            var winningCells = isDead ? GetWinningCells(board) : new HashSet<(int, int)>();
+            RenderBoard(board, winningCells, isDead);
+        }
 
-            if (isDead)
-            {
-                // find winning rows & columns
-                for (int i = 0; i < size; i++)
-                {
-                    if (CheckLineStatic(board.Cells[i]))
-                        for (int j = 0; j < size; j++)
-                            winningCells.Add((i, j));
-                    bool colWin = true;
-                    for (int j = 0; j < size; j++)
-                        if (board.Cells[j][i] != 1) colWin = false;
-                    if (colWin)
-                        for (int j = 0; j < size; j++)
-                            winningCells.Add((j, i));
-                }
-                // check diagonals
-                bool diag1 = true, diag2 = true;
-                for (int i = 0; i < size; i++)
-                {
-                    if (board.Cells[i][i] != 1) diag1 = false;
-                    if (board.Cells[i][size - 1 - i] != 1) diag2 = false;
-                }
-                if (diag1)
-                    for (int i = 0; i < size; i++)
-                        winningCells.Add((i, i));
-                if (diag2)
-                    for (int i = 0; i < size; i++)
-                        winningCells.Add((i, size - 1 - i));
-            }
-
-            // render grid
-            for (int r = 0; r < size; r++)
-            {
-                for (int c = 0; c < size; c++)
-                {
-                    string val = board.Cells[r][c] == null ? " " : "X";
-                    if (isDead && winningCells.Contains((r, c)))
-                        val = "*";
-                    Console.Write($" {val} ");
-                    if (c < size - 1) Console.Write("|");
-                }
-                Console.WriteLine();
-                if (r < size - 1)
-                    Console.WriteLine(new string('-', size * 4 - 1));
-            }
-        } // End of DisplayNotaktoBoard() method
-
-        // 11. Helpers for three‑in‑a‑row logic
+        // Helpers for three-in-a-row logic
         private bool HasThreeInARow(Board board) => HasThreeInARowStatic(board);
 
         public static bool HasThreeInARowStatic(Board board)
@@ -300,10 +206,10 @@ namespace BoardGames
             return true;
         }
 
-        // 12. Snapshot management
+        // Snapshot management
         private void SaveSnapshot()
         {
-            string json = JsonSerializer.Serialize(this, GetType());
+            string json = SerializeGameState();
             UndoStack.Push(json);
             RedoStack.Clear();
         }
@@ -312,34 +218,74 @@ namespace BoardGames
         {
             if (UndoStack.Count <= 1)
             {
-                Console.WriteLine("Nothing to undo. Press Enter...");
-                Console.ReadLine();
+                DisplayMessageAndPause(NO_UNDO_MESSAGE);
                 return;
             }
-            RedoStack.Push(UndoStack.Pop());
-            var restored = JsonSerializer.Deserialize(
-                UndoStack.Peek(), GetType()) as NotaktoGame;
-            CopyFrom(restored);
-            Console.WriteLine("Undo successful. Press Enter...");
-            Console.ReadLine();
+
+            if (IsHumanVsComputer)
+            {
+                if (UndoStack.Count >= 2)
+                {
+                    RedoStack.Push(UndoStack.Pop()); // Computer move
+                    RedoStack.Push(UndoStack.Pop()); // Player move
+                    var restored = DeserializeGameState(UndoStack.Peek());
+                    CopyFrom(restored);
+                    DisplayMessageAndPause(UNDO_SUCCESS_MESSAGE);
+                }
+                else
+                {
+                    DisplayMessageAndPause("Not enough moves to undo. Press Enter...");
+                    return;
+                }
+            }
+            else
+            {
+                RedoStack.Push(UndoStack.Pop());
+                var restored = DeserializeGameState(UndoStack.Peek());
+                CopyFrom(restored);
+                DisplayMessageAndPause(UNDO_SUCCESS_MESSAGE);
+            }
         }
 
         private void Redo()
         {
             if (RedoStack.Count == 0)
             {
-                Console.WriteLine("Nothing to redo. Press Enter...");
-                Console.ReadLine();
+                DisplayMessageAndPause(NO_REDO_MESSAGE);
                 return;
             }
-            var restored = JsonSerializer.Deserialize(
-                RedoStack.Pop(), GetType()) as NotaktoGame;
-            CopyFrom(restored);
-            Console.WriteLine("Redo successful. Press Enter...");
-            Console.ReadLine();
+
+            if (IsHumanVsComputer)
+            {
+                if (RedoStack.Count >= 2)
+                {
+                    string currentJson = SerializeGameState();
+                    UndoStack.Push(currentJson);
+                    string playerMove = RedoStack.Pop(); // Player move
+                    string computerMove = RedoStack.Pop(); // Computer move
+                    var restored = DeserializeGameState(computerMove);
+                    CopyFrom(restored);
+                    UndoStack.Push(playerMove);
+                    DisplayMessageAndPause(REDO_SUCCESS_MESSAGE);
+                }
+                else
+                {
+                    DisplayMessageAndPause("Not enough moves to redo. Press Enter...");
+                    return;
+                }
+            }
+            else
+            {
+                string currentJson = SerializeGameState();
+                UndoStack.Push(currentJson);
+                string json = RedoStack.Pop();
+                var restored = DeserializeGameState(json);
+                CopyFrom(restored);
+                DisplayMessageAndPause(REDO_SUCCESS_MESSAGE);
+            }
         }
 
-        private void CopyFrom(NotaktoGame other)  // copy state from snapshot
+        private void CopyFrom(NotaktoGame other)
         {
             Boards = other.Boards;
             DeadBoards = other.DeadBoards;
@@ -349,124 +295,152 @@ namespace BoardGames
             IsHumanVsComputer = other.IsHumanVsComputer;
         }
 
-        // 13. Help Display
-        public override void ShowHelp()
+
+        // Helper Methods
+        private static void DisplayMessageAndPause(string message)
         {
-            Console.WriteLine("Notakto Help:");
-            Console.WriteLine(" - Players take turns placing Xs on multiple boards.");
-            Console.WriteLine(" - If you complete a three-in-a-row, that board is dead.");
-            Console.WriteLine(" - If you complete the last live board, you lose.");
-            Console.WriteLine(" - Enter moves as: board row col");
-            Console.WriteLine(" - Boards and positions are zero-indexed.");
-            base.ShowHelp();
+            Console.WriteLine(message);
+            Console.ReadLine();
         }
 
-    } // End of NotaktoGame class
-
-    // 14. Human player class
-    class NotaktoPlayer : Player
-    {
-        public NotaktoPlayer(string name) : base(name, null) { }  // pass name to base
-
-        public override (int row, int col, int number) MakeMove(Board board)
-            => throw new NotImplementedException("Use multi-board version instead.");  // single-board not used
-
-        public virtual (int board, int row, int col) MakeMove(List<Board> boards)
+        private string SerializeGameState()
         {
-            while (true)
+            return JsonSerializer.Serialize(this, GetType());
+        }
+
+        private NotaktoGame DeserializeGameState(string json)
+        {
+            return JsonSerializer.Deserialize(json, GetType()) as NotaktoGame;
+        }
+
+        private bool ValidateMove(int boardIndex, int row, int col, string playerName)
+        {
+            if (DeadBoards.Contains(boardIndex))
             {
-                string input = Console.ReadLine();  // read user input
-                var parts = input.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-                if (parts.Length == 3 &&
-                    int.TryParse(parts[0], out int b) &&
-                    int.TryParse(parts[1], out int r) &&
-                    int.TryParse(parts[2], out int c) &&
-                    b >= 0 && b < boards.Count &&
-                    r >= 0 && r < boards[b].Size &&
-                    c >= 0 && c < boards[b].Size)
+                DisplayMessageAndPause(DEAD_BOARD_MESSAGE);
+                return false;
+            }
+
+            if (!Boards[boardIndex].IsValidMove(row, col))
+            {
+                DisplayMessageAndPause(INVALID_MOVE_MESSAGE);
+                return false;
+            }
+
+            return true;
+        }
+
+        private bool ApplyMoveAndCheckEnd(int boardIndex, int row, int col, string playerName)
+        {
+            Boards[boardIndex].Cells[row][col] = 1;
+            if (HasThreeInARow(Boards[boardIndex]))
+                DeadBoards.Add(boardIndex);
+
+            if (DeadBoards.Count == Boards.Count)
+            {
+                Console.Clear();
+                DisplayBoards();
+                Console.WriteLine($"{playerName} loses! You completed the last playable move.");
+                DisplayMessageAndPause(RETURN_TO_MENU_MESSAGE);
+                return false;
+            }
+
+            SwitchPlayer();
+            return true;
+        }
+
+        private void HandleSaveGame()
+        {
+            Console.Write(SAVE_FILENAME_PROMPT);
+            string filename = Console.ReadLine()?.Trim();
+            if (string.IsNullOrWhiteSpace(filename))
+            {
+                DisplayMessageAndPause(INVALID_FILENAME_MESSAGE);
+                return;
+            }
+            if (!filename.EndsWith(JSON_EXTENSION, StringComparison.OrdinalIgnoreCase))
+                filename += JSON_EXTENSION;
+            SaveGame(filename);
+            DisplayMessageAndPause($"Game saved to '{filename}'. Press Enter...");
+        }
+
+        private static int GetValidBoardCount()
+        {
+            Console.WriteLine(BOARD_COUNT_PROMPT);
+            int boardCount;
+            while (!int.TryParse(Console.ReadLine(), out boardCount) || boardCount < MIN_BOARDS || boardCount > MAX_BOARDS)
+            {
+                Console.Clear();
+                Console.WriteLine(INVALID_BOARD_COUNT_MESSAGE);
+            }
+            return boardCount;
+        }
+
+        private static bool GetValidGameMode()
+        {
+            Console.Clear();
+            Console.WriteLine(GAME_MODE_PROMPT);
+            string mode;
+            while ((mode = Console.ReadLine()?.Trim()) != HUMAN_MODE && mode != COMPUTER_MODE)
+            {
+                Console.Clear();
+                Console.WriteLine(INVALID_MODE_MESSAGE);
+                Console.WriteLine(GAME_MODE_PROMPT);
+            }
+            return mode == COMPUTER_MODE;
+        }
+
+        private HashSet<(int, int)> GetWinningCells(Board board)
+        {
+            var winningCells = new HashSet<(int, int)>();
+            int size = board.Size;
+
+            for (int i = 0; i < size; i++)
+            {
+                if (CheckLineStatic(board.Cells[i]))
+                    for (int j = 0; j < size; j++)
+                        winningCells.Add((i, j));
+                bool colWin = true;
+                for (int j = 0; j < size; j++)
+                    if (board.Cells[j][i] != 1) colWin = false;
+                if (colWin)
+                    for (int j = 0; j < size; j++)
+                        winningCells.Add((j, i));
+            }
+
+            bool diag1 = true, diag2 = true;
+            for (int i = 0; i < size; i++)
+            {
+                if (board.Cells[i][i] != 1) diag1 = false;
+                if (board.Cells[i][size - 1 - i] != 1) diag2 = false;
+            }
+            if (diag1)
+                for (int i = 0; i < size; i++)
+                    winningCells.Add((i, i));
+            if (diag2)
+                for (int i = 0; i < size; i++)
+                    winningCells.Add((i, size - 1 - i));
+
+            return winningCells;
+        }
+
+        private void RenderBoard(Board board, HashSet<(int, int)> winningCells, bool isDead)
+        {
+            int size = board.Size;
+            for (int r = 0; r < size; r++)
+            {
+                for (int c = 0; c < size; c++)
                 {
-                    return (b, r, c);  // valid move
+                    string val = board.Cells[r][c] == null ? " " : "X";
+                    if (isDead && winningCells.Contains((r, c)))
+                        val = "*";
+                    Console.Write($" {val} ");
+                    if (c < size - 1) Console.Write("|");
                 }
-                Console.WriteLine("Invalid input. Format: board row col (e.g. 0 1 1)");
+                Console.WriteLine();
+                if (r < size - 1)
+                    Console.WriteLine(new string('-', size * 4 - 1));
             }
         }
-
-        public virtual (int board, int row, int col) MakeMove(
-            List<Board> boards, HashSet<int> deadBoards)
-            => MakeMove(boards);  // ignore dead boards here
-    } // End of NotaktoPlayer class
-
-    // 15. Computer player class
-    class NotaktoComputer : NotaktoPlayer
-    {
-        private Random rand = new();               // random move selector
-
-        public NotaktoComputer(string name) : base(name) { }  // pass name up
-
-        public override (int board, int row, int col) MakeMove(
-    List<Board> boards, HashSet<int> deadBoards)
-{
-    // Gather all possible moves on active boards
-    var options = new List<(int board, int row, int col)>();
-    for (int b = 0; b < boards.Count; b++)
-    {
-        if (deadBoards.Contains(b)) continue;
-        for (int i = 0; i < boards[b].Size; i++)
-            for (int j = 0; j < boards[b].Size; j++)
-                if (boards[b].Cells[i][j] == null)
-                    options.Add((b, i, j));
     }
-
-    // Classify moves into those that kill a board vs those that don't
-    var killMoves = new List<(int board, int row, int col)>(); // moves that complete a three-in-a-row
-    var safeMoves = new List<(int board, int row, int col)>(); // moves that do not
-
-    int live = boards.Count - deadBoards.Count;
-
-    foreach (var opt in options)
-    {
-        var (b, r, c) = opt;
-        // simulate placing an X
-        boards[b].Cells[r][c] = 1;
-        bool kills = NotaktoGame.HasThreeInARowStatic(boards[b]);
-        // revert simulation
-        boards[b].Cells[r][c] = null;
-
-        if (kills)
-        {
-            // only consider killing if it won't be the last board
-            if (deadBoards.Count + 1 < boards.Count)
-                killMoves.Add(opt);
-        }
-        else
-        {
-            safeMoves.Add(opt);
-        }
-    }
-
-    // 1. Prefer kill moves that leave an even number of boards (parity strategy)
-    if (killMoves.Count > 0)
-    {
-        var goodKills = killMoves
-            .Where(m => ((live - 1) % 2) == 0)
-            .ToList();
-        if (goodKills.Count > 0)
-            return goodKills[rand.Next(goodKills.Count)];
-        // if none maintain parity, pick any kill move
-        return killMoves[rand.Next(killMoves.Count)];
-    }
-
-    // 2. If no kill move, pick a safe move at random
-    if (safeMoves.Count > 0)
-        return safeMoves[rand.Next(safeMoves.Count)];
-
-    // 3. Fallback (should never happen): pick any available move
-    return options[rand.Next(options.Count)];
 }
-
-
-
-
-    } // End of NotaktoComputer class
-
-} // End of BoardGames namespace
