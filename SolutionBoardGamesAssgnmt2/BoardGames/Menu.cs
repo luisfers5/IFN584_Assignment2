@@ -178,7 +178,7 @@ namespace BoardGames
                 Console.WriteLine($"[{i + 1}] {Path.GetFileName(saveFiles[i])}");
             }
 
-            Console.Write("\nSelect a file by number or enter a filename manually: ");
+            Console.Write("\nSelect a file by number : ");
             string input = Console.ReadLine()?.Trim();
 
             string selectedFile = null;
@@ -187,17 +187,7 @@ namespace BoardGames
             {
                 selectedFile = Path.GetFileName(saveFiles[num - 1]);
             }
-            else if (!string.IsNullOrEmpty(input))
-            {
-                string full = Path.Combine(savePath, input);
-                if (File.Exists(full) &&
-                    !input.EndsWith(".runtimeconfig.json") &&
-                    !input.EndsWith(".deps.json") &&
-                    !input.StartsWith("boardgames"))
-                {
-                    selectedFile = input;
-                }
-            }
+            
 
             if (selectedFile == null)
             {
@@ -216,6 +206,7 @@ namespace BoardGames
             }
 
             string gameType = parts[1];
+            Console.WriteLine("Debug  gameType: "+ gameType);
             try
             {
                 Game game = gameType switch
@@ -225,7 +216,8 @@ namespace BoardGames
                     "Gomoku" => Game.LoadGame<GomokuGame>(selectedFile),
                     _ => throw new Exception($"Unrecognized game type '{gameType}'")
                 };
-
+                Console.WriteLine("Debug : "+ selectedFile);
+                
                 StartGame(game);
             }
             catch (Exception ex)

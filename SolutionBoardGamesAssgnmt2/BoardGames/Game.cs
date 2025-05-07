@@ -21,8 +21,10 @@ namespace BoardGames
         public int CurrentPlayerIndex { get; set; } = 1;
         public bool IsHumanVsComputer { get; set; }
 
-        protected Stack<String> UndoStack { get; set; } = new();
-        protected Stack<String> RedoStack { get; set; } = new();
+        [JsonInclude]
+        public Stack<String> UndoStack { get; set; } = new();
+        [JsonInclude]
+        public Stack<String> RedoStack { get; set; } = new();
 
         public virtual void Start()
         {
@@ -30,15 +32,22 @@ namespace BoardGames
             SaveSnapshot();
             while (true)
             {
-                Console.Clear();
+                Console.Clear(); // debug !!
                 DisplayBoard();
-                Console.WriteLine($"\n{GetCurrentPlayer().Name}'s turn.");
-                Console.WriteLine("Commands: move | save | undo | redo | help | quit");
-                Console.Write("Enter command: ");
+                Console.WriteLine($"\n{GetCurrentPlayer().Name}'s turn");
+                Console.WriteLine("Commands:");
+                Console.WriteLine("  1. Move");
+                Console.WriteLine("  2. Save");
+                Console.WriteLine("  3. Undo");
+                Console.WriteLine("  4. Redo");
+                Console.WriteLine("  5. Help");
+                Console.WriteLine("  6. Quit");
+                Console.Write("Enter command (1-6): ");
 
-                string input = Console.ReadLine()?.Trim().ToLower();
+                string input = Console.ReadLine()?.Trim();
                 switch (input)
                 {
+                    case "1":
                     case "move":
                         bool continueGame = TryApplyMove();
                         SaveSnapshot(); // Save with actual move count
@@ -46,6 +55,7 @@ namespace BoardGames
                             return;
                         break;
 
+                    case "2":
                     case "save":
                         Console.Write("Enter filename to save (e.g., mygame): ");
                         string filename = Console.ReadLine()?.Trim();
@@ -58,19 +68,23 @@ namespace BoardGames
                         DisplayMessageAndPause($"Game saved to '{filename}'. Press Enter...");
                         break;
 
+                    case "3":
                     case "undo":
                         Undo();
                         break;
 
+                    case "4":
                     case "redo":
                         Redo();
                         break;
 
+                    case "5":
                     case "help":
                         ShowHelp();
                         DisplayMessageAndPause("\nPress Enter to continue...");
                         break;
 
+                    case "6":
                     case "quit":
                         Console.WriteLine("Returning to main menu...");
                         return;
@@ -120,6 +134,7 @@ namespace BoardGames
             string finalName = $"{baseName}_{suffix}_{sizePart}_{mode}.json";
             string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, finalName);
 
+
             string json = JsonSerializer.Serialize(this, GetType(), new JsonSerializerOptions
             {
                 WriteIndented = true
@@ -133,8 +148,42 @@ namespace BoardGames
         {
             string fullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, filename);
             string json = File.ReadAllText(fullPath);
-            return (T)JsonSerializer.Deserialize(json, typeof(T));          // Deserialize and return
-        } //End of LoadGame() medhod
+            T game = (T)JsonSerializer.Deserialize(json, typeof(T));
+
+            
+            var undoList = game.UndoStack.ToList();
+            var redoList = game.RedoStack.ToList();
+
+            Console.WriteLine("=== UndoStack (original) ===");
+            foreach (var s in undoList)
+            {
+                Console.WriteLine(s.Substring(0, Math.Min(100, s.Length)) + "...");
+            }
+
+            var correctedUndo = new Stack<string>();
+            for (int i = 0; i < undoList.Count - 1; i++)
+            {
+                correctedUndo.Push(undoList[i]);
+            }
+            
+            game.UndoStack = correctedUndo;
+
+            var correctedRedo = new Stack<string>();
+            for (int i = 0; i < redoList.Count - 1; i++)
+            {
+                correctedRedo.Push(redoList[i]);
+            }
+            game.RedoStack = correctedRedo;
+
+            Console.WriteLine("\n=== UndoStack (after manual reverse) ===");
+            foreach (var s in game.UndoStack)
+            {
+                Console.WriteLine(s.Substring(0, Math.Min(100, s.Length)) + "...");
+            }
+
+            return game;
+        }
+        //End of LoadGame() medhod
 
         // 9. Save current state into undo stack
         protected void SaveSnapshot()
@@ -147,24 +196,20 @@ namespace BoardGames
         // 10. Undo the last move
         protected void Undo()
         {
-
-            // Nothing to undo
-            if (UndoStack.Count < 1)
+            if (UndoStack.Count < 2)
             {
-                Console.WriteLine(NO_UNDO_MESSAGE);
+                Console.WriteLine("Nothing to undo. Press Enter...");
                 Console.ReadLine();
                 return;
             }
 
-            // Move last state to redo
+
             RedoStack.Push(UndoStack.Pop());
 
-
-
             var restored = JsonSerializer.Deserialize(UndoStack.Peek(), GetType()) as Game;
-            CopyFrom(restored); // Restore previous state
+            CopyFrom(restored);
 
-            Console.WriteLine(UNDO_SUCCESS_MESSAGE);
+            Console.WriteLine("Undo successful. Press Enter...");
             Console.ReadLine();
         } // End of Undo() method
 
@@ -197,6 +242,8 @@ namespace BoardGames
             Player2 = other.Player2;
             CurrentPlayerIndex = other.CurrentPlayerIndex;
             IsHumanVsComputer = other.IsHumanVsComputer;
+            Console.WriteLine("UndoStack count: " + UndoStack.Count);
+            Console.WriteLine("RedoStack count: " + RedoStack.Count);
         } // End of CopyFrom() method
 
         protected static void DisplayMessageAndPause(string message)
@@ -205,7 +252,7 @@ namespace BoardGames
             Console.ReadLine();
         }
 
-       
+
 
 
     }
