@@ -5,12 +5,9 @@ namespace BoardGames;
 // 14. Human player class
 public class NotaktoPlayer : Player
 {
-    public NotaktoPlayer(string name) : base(name, null) { }  // pass name to base
+    public NotaktoPlayer(string name) : base(name) { }  // pass name to base
 
-    public override (int row, int col, int number) MakeMove(Board board)
-        => throw new NotImplementedException("Use multi-board version instead");  // single-board not used
-
-    public virtual (int board, int row, int col) MakeMove(List<Board> boards)
+    public override (int row, int col, int number) MakeMove(List<Board> boards, Board board)
     {
         while (true)
         {
@@ -24,13 +21,10 @@ public class NotaktoPlayer : Player
                 r >= 0 && r < boards[b].Size &&
                 c >= 0 && c < boards[b].Size)
             {
-                return (b, r, c);  // valid move
+                return (r, c, b);  // valid move
             }
             Console.WriteLine("Invalid input. Format: board row col (e.g. 0 1 1)");
         }
     }
 
-    public virtual (int board, int row, int col) MakeMove(
-        List<Board> boards, HashSet<int> deadBoards)
-        => MakeMove(boards);  // ignore dead boards here
 } // End of NotaktoPlayer class

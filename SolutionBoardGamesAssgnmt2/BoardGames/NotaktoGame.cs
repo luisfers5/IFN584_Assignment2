@@ -5,7 +5,7 @@ namespace BoardGames
 {
     class NotaktoGame : Game
     {
-        private const string BOARD_SIZE_MESSAGE = "Notakto only uses 3x3 boards. Board size set to 3.\n";
+        private const string BOARD_SIZE_MESSAGE = "Notakto only uses 3x3 boards. Board size set to 3\n";
         private const string BOARD_COUNT_PROMPT = "How many boards? (recommended: 3):";
         private const string INVALID_BOARD_COUNT_MESSAGE = "Enter between 1 and 5 boards.";
         private const string GAME_MODE_PROMPT = "Select game mode:\n[1] Human vs Human\n[2] Human vs Computer";
@@ -20,6 +20,8 @@ namespace BoardGames
         private const int BOARD_SIZE = 3;
         private const string HUMAN_MODE = "1";
         private const string COMPUTER_MODE = "2";
+
+        public override string GetFileSuffix() => "Notakto";
 
         public List<Board> Boards { get; set; }
         public HashSet<int> DeadBoards { get; set; }
@@ -101,7 +103,7 @@ namespace BoardGames
             return true;
         }
 
-        protected override void CopyFrom(Game other)
+        public override void CopyFrom(Game other)
         {
             if (other is NotaktoGame notakto)
             {
@@ -127,7 +129,7 @@ namespace BoardGames
 
             var (boardIndex, row, col) = isComputer
                 ? ((NotaktoComputer)player).MakeMove(Boards, DeadBoards)
-                : ((NotaktoPlayer)player).MakeMove(Boards);
+                : ((NotaktoPlayer)player).MakeMove(Boards, null);
 
             if (!ValidateMove(boardIndex, row, col, player.Name))
                 return false;
@@ -180,7 +182,7 @@ namespace BoardGames
         {
             if (board == null)
             {
-                Console.WriteLine("Board is null.");
+                Console.WriteLine("Board is null");
                 return;
             }
 

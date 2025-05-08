@@ -25,6 +25,11 @@ namespace BoardGames
             mapping[type] = factory;
             return factory;
         }
+
+        internal static object GetFactory(GameType? type)
+        {
+            throw new NotImplementedException();
+        }
     }
 
 

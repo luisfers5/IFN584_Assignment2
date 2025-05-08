@@ -18,23 +18,21 @@ namespace BoardGames
     {
         public string Name { get; set; }                                  // Player's name
 
-        public List<int> AvailableNumbers { get; set; }                   // For Numerical TTT (optional elsewhere)
+ 
 
         // Default constructor — required for deserialization
         protected Player()
         {
             Name = "Unknown";                                             // Generic default name
-            AvailableNumbers = new List<int>();                           // Starts with an empty number list
         }
 
         // Constructor with parameters — used for setting name and numbers directly
-        protected Player(string name, List<int> numbers)
+        protected Player(string name)
         {
             Name = name;                                                  // Assign given name
-            AvailableNumbers = numbers ?? new List<int>();                // Null-safe assignment
         }
 
-        // Abstract move method — each player type (human or AI) implements it differently
-        public abstract (int row, int col, int number) MakeMove(Board board);
+        // Abstract move method — each player type (human or Computer) implements it differently
+        public abstract (int row, int col, int number) MakeMove(List<Board> boards, Board board);
     }
 }

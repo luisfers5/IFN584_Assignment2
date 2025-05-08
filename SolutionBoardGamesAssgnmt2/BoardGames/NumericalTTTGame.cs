@@ -23,6 +23,8 @@ namespace BoardGames
         private const string LINE_TYPE_MAIN_DIAGONAL = "main_diagonal";
         private const string LINE_TYPE_ANTI_DIAGONAL = "anti_diagonal";
 
+        public override string GetFileSuffix() => "TicTacToe";
+
         // Static setup method
         public static new Game SetupNewGame()
         {
@@ -144,7 +146,7 @@ namespace BoardGames
 
         private bool ApplyAndValidateMove(Player player)
         {
-            var (row, col, number) = player.MakeMove(Board);
+            var (row, col, number) = player.MakeMove(null, Board);
             if (!Board.PlaceNumber(row, col, number))
             {
                 DisplayMessageAndPause(INVALID_MOVE_MESSAGE);

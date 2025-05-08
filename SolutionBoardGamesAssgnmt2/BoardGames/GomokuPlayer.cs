@@ -6,12 +6,12 @@ public class GomokuPlayer : Player
 {
     public int Symbol { get; }
 
-    public GomokuPlayer(string name, int symbol) : base(name, null)
+    public GomokuPlayer(string name, int symbol) : base(name)
     {
         Symbol = symbol;
     }
 
-    public override (int row, int col, int number) MakeMove(Board board)
+    public override (int row, int col, int number) MakeMove(List<Board> boards, Board board)
     {
         Console.WriteLine($"{Name}, enter move as: row col (for example 2 2, separated by space)");
         while (true)

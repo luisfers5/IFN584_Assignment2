@@ -20,6 +20,7 @@ namespace BoardGames
         private const string INVALID_MOVE_MESSAGE = "Cell is taken or out of bounds. Please choose a different cell";
         private const string PRESS_ENTER_MESSAGE = "Press Enter to return to the main menu...";
         private const string COMPUTER_THINKING_MESSAGE = "\nComputer is thinking...";
+        public override string GetFileSuffix() => "Gomoku";
 
 
         public static new Game SetupNewGame()
@@ -69,7 +70,7 @@ namespace BoardGames
             // Cast to GomokuPlayer
             var currentPlayer = (GomokuPlayer)GetCurrentPlayer();
             // Get human move
-            var (row, col, _) = currentPlayer.MakeMove(Board);
+            var (row, col, _) = currentPlayer.MakeMove(null,Board);
 
             if (TryPlaceMove(row, col, currentPlayer.Symbol))
                 return true;
@@ -112,7 +113,7 @@ namespace BoardGames
             if (IsHumanVsComputer && GetCurrentPlayer() is GomokuComputer comp)
             {
                 Console.WriteLine(COMPUTER_THINKING_MESSAGE);
-                var (row, col, _) = comp.MakeMove(Board);
+                var (row, col, _) = comp.MakeMove(null, Board);
                 Board.Cells[row][col] = comp.Symbol;
 
                 if (CheckGomokuWin(row, col, comp.Symbol, comp))
@@ -151,7 +152,7 @@ namespace BoardGames
 
 
         // 3. Checks all directions from a move for 5-in-a-row
-        private bool CheckGomokuWin(int row, int col, int symbol, GomokuPlayer player)
+        private bool CheckGomokuWin(int row, int col, int symbol, Player player)
         {
             if (CheckLine(row, col, symbol, 1, 0) ||                    // Horizontal
                    CheckLine(row, col, symbol, 0, 1) ||                  // Vertical
@@ -172,7 +173,7 @@ namespace BoardGames
             int count = 1;
             count += CountInDirection(row, col, symbol, dx, dy);
             count += CountInDirection(row, col, symbol, -dx, -dy);
-            return count >= 5;
+            return count >= WINNING_LINE_LENGTH;
         }
 
         // 5. Helper to count matching symbols in a given direction

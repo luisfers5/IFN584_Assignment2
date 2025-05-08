@@ -9,7 +9,7 @@ class NotaktoComputer : NotaktoPlayer
 
     public NotaktoComputer(string name) : base(name) { }  // pass name up
 
-    public override (int board, int row, int col) MakeMove(List<Board> boards, HashSet<int> deadBoards)
+    public  (int board, int row, int col) MakeMove(List<Board> boards, HashSet<int> deadBoards)
     {
         // Gather all possible moves on active boards
         var options = new List<(int board, int row, int col)>();

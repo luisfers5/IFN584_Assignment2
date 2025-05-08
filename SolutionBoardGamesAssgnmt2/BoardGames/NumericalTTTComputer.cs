@@ -5,7 +5,7 @@ using static BoardGames.NumericalTTTGame;
 namespace BoardGames
 {
     // 1. Class Declaration
-    class NumericalTTTComputer : Player             // Computer-controlled player, inherits from Player
+    class NumericalTTTComputer : NumericalTTTPlayer             // Computer-controlled player, inherits from Player
     {
         // 2. Random generator for fallback moves
         private Random rand = new Random();    // used to pick random cell or number
@@ -17,7 +17,7 @@ namespace BoardGames
             : base(name, numbers) { }         // ctor with name and available numbers
 
         // 4. Move Logic
-        public override (int row, int col, int number) MakeMove(Board board)
+        public override (int row, int col, int number) MakeMove(List<Board> boards, Board board)
         {
             // 4a. Try to find an immediate winning move
             for (int i = 0; i < board.Size; i++)
