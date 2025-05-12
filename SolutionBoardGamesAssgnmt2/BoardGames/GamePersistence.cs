@@ -12,7 +12,7 @@ public class GamePersistence
 {
     public void SaveGame(Game game, string filename)
     {
-        string suffix = game.GetFileSuffix();
+        string suffix = game.GetFileSuffix(); // game type or name
         string sizePart = game.Board != null ? $"{game.Board.Size}x{game.Board.Size}" : "";
         string mode = game.IsHumanVsComputer ? "HumanVsComputer" : "HumanVsHuman";
         string finalName = $"{Path.GetFileNameWithoutExtension(filename)}_{suffix}_{sizePart}_{mode}.json";
@@ -38,12 +38,14 @@ public class GamePersistence
         Console.WriteLine("=== UndoStack (original) ===");
         foreach (var s in undoList)
         {
+            // debug
             Console.WriteLine(s.Substring(0, Math.Min(100, s.Length)) + "...");
         }
 
         var correctedUndo = new Stack<string>();
         for (int i = 0; i < undoList.Count - 1; i++)
         {
+            // reorder 
             correctedUndo.Push(undoList[i]);
         }
 
@@ -52,6 +54,7 @@ public class GamePersistence
         var correctedRedo = new Stack<string>();
         for (int i = 0; i < redoList.Count - 1; i++)
         {
+            // reorder 
             correctedRedo.Push(redoList[i]);
         }
         game.UndoRedoManager.RedoStack = correctedRedo;

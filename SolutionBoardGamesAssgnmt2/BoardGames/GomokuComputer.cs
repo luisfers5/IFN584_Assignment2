@@ -25,7 +25,7 @@ class GomokuComputer : Player
         var move = FindWinningMove(board, Symbol);
         if (move.HasValue) return (move.Value.row, move.Value.col, 0);
 
-        // Try blocking opponent's winning move
+        // Try opponent's winning move
         int opponentSymbol = Symbol == PLAYER1_SYMBOL ? PLAYER2_SYMBOL : PLAYER1_SYMBOL;
         move = FindWinningMove(board, opponentSymbol);
         if (move.HasValue) return (move.Value.row, move.Value.col, 0);
@@ -97,28 +97,13 @@ class GomokuComputer : Player
     // Helper method to evaluate the length of the line created by a move
     private int EvaluateLineLength(Board board, int row, int col, int symbol)
     {
-        int Count(int dx, int dy)
-        {
-            int cnt = 0;
-            int x = row + dx, y = col + dy;
-            while (x >= 0 && x < board.Size &&
-                y >= 0 && y < board.Size &&
-                board.Cells[x][y] == symbol)
-            {
-                cnt++;
-                x += dx;
-                y += dy;
-            }
-            return cnt;
-        }
-
         return Math.Max(
-            Count(1, 0) + Count(-1, 0) + 1, // Horizontal
+            CountInDirection(board, row, col, 1, 0, symbol) + CountInDirection(board, row, col, -1, 0, symbol) + 1, // Horizontal
             Math.Max(
-                Count(0, 1) + Count(0, -1) + 1, // Vertical
+                CountInDirection(board, row, col, 0, 1, symbol) + CountInDirection(board, row, col, 0, -1, symbol) + 1, // Vertical
                 Math.Max(
-                    Count(1, 1) + Count(-1, -1) + 1, // Diagonal \
-                    Count(1, -1) + Count(-1, 1) + 1  // Diagonal /
+                    CountInDirection(board, row, col, 1, 1, symbol) + CountInDirection(board, row, col, -1, -1, symbol) + 1, // Diagonal \
+                    CountInDirection(board, row, col, 1, -1, symbol) + CountInDirection(board, row, col, -1, 1, symbol) + 1  // Diagonal /
                 )
             )
         );
@@ -126,24 +111,28 @@ class GomokuComputer : Player
 
     private bool CheckWin(Board board, int row, int col, int symbol)
     {
-        int Count(int dx, int dy)
+        return (CountInDirection(board, row, col, 1, 0, symbol) + CountInDirection(board, row, col, -1, 0, symbol) + 1 >= WINNING_LINE_LENGTH) || // Horizontal
+               (CountInDirection(board, row, col, 0, 1, symbol) + CountInDirection(board, row, col, 0, -1, symbol) + 1 >= WINNING_LINE_LENGTH) || // Vertical
+               (CountInDirection(board, row, col, 1, 1, symbol) + CountInDirection(board, row, col, -1, -1, symbol) + 1 >= WINNING_LINE_LENGTH) || // Diagonal \
+               (CountInDirection(board, row, col, 1, -1, symbol) + CountInDirection(board, row, col, -1, 1, symbol) + 1 >= WINNING_LINE_LENGTH);   // Diagonal /
+    }
+
+
+    private int CountInDirection(Board board, int startRow, int startCol, int dx, int dy, int symbol)
+    {
+        int count = 0;
+        int x = startRow + dx, y = startCol + dy;
+
+        while (x >= 0 && x < board.Size &&
+               y >= 0 && y < board.Size &&
+               board.Cells[x][y] == symbol)
         {
-            int cnt = 0;
-            int x = row + dx, y = col + dy;
-            while (x >= 0 && x < board.Size &&
-                   y >= 0 && y < board.Size &&
-                   board.Cells[x][y] == symbol)
-            {
-                cnt++;
-                x += dx;
-                y += dy;
-            }
-            return cnt;
+            count++;
+            x += dx;
+            y += dy;
         }
 
-        return (Count(1, 0) + Count(-1, 0) + 1 >= WINNING_LINE_LENGTH) ||             // Horizontal
-               (Count(0, 1) + Count(0, -1) + 1 >= WINNING_LINE_LENGTH) ||             // Vertical
-               (Count(1, 1) + Count(-1, -1) + 1 >= WINNING_LINE_LENGTH) ||            // Diagonal \
-               (Count(1, -1) + Count(-1, 1) + 1 >= WINNING_LINE_LENGTH);              // Diagonal /
+        return count;
     }
+
 }

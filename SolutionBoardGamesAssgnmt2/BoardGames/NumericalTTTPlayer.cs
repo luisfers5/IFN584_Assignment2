@@ -41,7 +41,7 @@ namespace BoardGames
                 // 3b. Validate cell availability
                 if (!board.IsValidMove(row, col))
                 {
-                    Console.WriteLine("That cell is already taken or out of bounds.");
+                    Console.WriteLine("That cell is already taken or out of bounds");
                     continue;                                       // retry
                 }
 

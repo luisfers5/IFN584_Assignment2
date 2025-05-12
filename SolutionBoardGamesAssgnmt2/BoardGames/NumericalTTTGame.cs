@@ -11,8 +11,8 @@ namespace BoardGames
         private const string GAME_MODE_PROMPT = "Select game mode:\n[1 vs 1] -> [1]\n[1 vs PC] -> [2]";
         private const string INVALID_MODE_MESSAGE = "Invalid input. Try again";
         private const string INVALID_MOVE_MESSAGE = "Invalid move. Press Enter...";
-        private const string COMPUTER_THINKING_MESSAGE = "\nComputer is thinking...";
-        private const string TIE_MESSAGE = "\nIt's a tie!";
+        private const string COMPUTER_THINKING_MESSAGE = " Computer is thinking...";
+        private const string TIE_MESSAGE = " It's a tie!";
         private const string RETURN_TO_MENU_MESSAGE = "Press Enter to return to the main menu...";
         private const string HUMAN_MODE = "1";
         private const string COMPUTER_MODE = "2";

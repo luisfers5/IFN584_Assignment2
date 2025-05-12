@@ -111,7 +111,7 @@ namespace BoardGames
 
         public virtual void ShowHelp()
         {
-            Console.WriteLine("\nHelp Menu:");
+            Console.WriteLine(" Help Menu:");
             Console.WriteLine(" move  - Make a move");
             Console.WriteLine(" save  - Save current game to file");
             Console.WriteLine(" undo  - Undo the previous move");
