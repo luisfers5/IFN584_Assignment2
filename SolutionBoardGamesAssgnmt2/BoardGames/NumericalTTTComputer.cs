@@ -5,7 +5,8 @@ using static BoardGames.NumericalTTTGame;
 namespace BoardGames
 {
     // 1. Class Declaration
-    class NumericalTTTComputer : NumericalTTTPlayer             // Computer-controlled player, inherits from Player
+    // Computer-controlled player, inherits from Player
+    class NumericalTTTComputer : NumericalTTTPlayer             
     {
         // 2. Random generator for fallback moves
         private Random rand = new Random();    // used to pick random cell or number
@@ -24,14 +25,17 @@ namespace BoardGames
             {
                 for (int j = 0; j < board.Size; j++)
                 {
-                    if (!board.IsValidMove(i, j))      // skip if cell not free
+                    // skip if cell not free
+                    if (!board.IsValidMove(i, j))      
                         continue;
 
                     // simulate each available number here
                     foreach (int num in new List<int>(AvailableNumbers))
                     {
-                        board.Cells[i][j] = num;        // place number temporarily
-                        if (CheckWinStatic(board))      // check for win
+                        // place number temporarily
+                        board.Cells[i][j] = num;        
+                        // check for win
+                        if (CheckWinStatic(board))     
                         {
                             board.Cells[i][j] = null;   // undo simulation
                             AvailableNumbers.Remove(num);

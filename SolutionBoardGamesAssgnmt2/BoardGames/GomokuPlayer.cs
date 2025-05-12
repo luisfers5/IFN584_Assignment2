@@ -23,7 +23,6 @@ public class GomokuPlayer : Player
                 row >= 0 && row < board.Size &&
                 col >= 0 && col < board.Size)
             {
-                // We ignore 'number' for Gomoku
                 return (row, col, 0);                                
             }
             Console.WriteLine("Invalid input! Format: row col (e.g., 4 7)");

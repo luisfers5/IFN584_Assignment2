@@ -25,7 +25,7 @@ public class GameLauncher
 
         if (saveFiles.Count == 0)
         {
-            Console.WriteLine("No valid saved games found.");
+            Console.WriteLine("No valid saved games found ");
             Console.WriteLine("Press Enter to return to the main menu...");
             Console.ReadLine();
             return;
@@ -37,7 +37,7 @@ public class GameLauncher
             Console.WriteLine($"[{i + 1}] {Path.GetFileName(saveFiles[i])}");
         }
 
-        Console.Write("\nSelect a file by number : ");
+        Console.Write(" Select a file by number : ");
         string input = Console.ReadLine()?.Trim();
 
         string selectedFile = null;

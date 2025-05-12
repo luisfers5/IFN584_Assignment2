@@ -5,9 +5,11 @@ namespace BoardGames;
 // 15. Computer player class
 class NotaktoComputer : NotaktoPlayer
 {
-    private Random rand = new();               // random move selector
+    // random move selector
+    private Random rand = new();               
 
-    public NotaktoComputer(string name) : base(name) { }  // pass name up
+    // pass name up
+    public NotaktoComputer(string name) : base(name) { }  
 
     public  (int board, int row, int col) MakeMove(List<Board> boards, HashSet<int> deadBoards)
     {

@@ -107,6 +107,7 @@ namespace BoardGames
         {
             if (other is NotaktoGame notakto)
             {
+                // not existed ? -> assign new()
                 Boards = notakto.Boards ?? new List<Board>();
                 DeadBoards = notakto.DeadBoards ?? new HashSet<int>();
                 Player1 = notakto.Player1;
@@ -153,7 +154,7 @@ namespace BoardGames
             {
                 Console.Clear();
                 DisplayBoard();
-                Console.WriteLine($"{player.Name} loses! You completed the last playable move.");
+                Console.WriteLine($"{player.Name} loses! You completed the last playable move ");
                 DisplayMessageAndPause(RETURN_TO_MENU_MESSAGE);
                 return true;
             }

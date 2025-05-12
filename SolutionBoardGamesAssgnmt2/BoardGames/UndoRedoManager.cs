@@ -27,8 +27,10 @@ public class UndoRedoManager
     public void SaveSnapshot(Game game)
     {
         string json = JsonSerializer.Serialize(game, game.GetType());
-        UndoStack.Push(json);                                           // Save to undo history
-        RedoStack.Clear();                                              // Clear redo history on new move
+        // Save to undo history
+        UndoStack.Push(json);       
+         // Clear redo history on new move                                    
+        RedoStack.Clear();                                             
     } // End of SaveSnapshot() method
 
 
