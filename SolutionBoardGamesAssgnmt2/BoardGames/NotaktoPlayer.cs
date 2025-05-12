@@ -21,7 +21,7 @@ public class NotaktoPlayer : Player
                 r >= 0 && r < boards[b].Size &&
                 c >= 0 && c < boards[b].Size)
             {
-                return (r, c, b);  // valid move
+                return (b, r, c);  // valid move
             }
             Console.WriteLine("Invalid input. Format: board row col (e.g. 0 1 1)");
         }
