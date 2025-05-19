@@ -7,7 +7,7 @@ namespace BoardGames
     {
         // Constants for messages and settings
         private const string BOARD_SIZE_PROMPT = "Enter board size n (for an NxN board): ";
-        private const string INVALID_SIZE_MESSAGE = "Invalid input. Please enter a positive integer";
+        private const string INVALID_SIZE_MESSAGE = "Invalid input. Please enter a positive integer greater or equal to 3";
         private const string GAME_MODE_PROMPT = "Select game mode:\n[1 vs 1] -> [1]\n[1 vs PC] -> [2]";
         private const string INVALID_MODE_MESSAGE = "Invalid input. Try again";
         private const string INVALID_MOVE_MESSAGE = "Invalid move. Press Enter...";
@@ -104,7 +104,7 @@ namespace BoardGames
             while (true)
             {
                 Console.WriteLine(BOARD_SIZE_PROMPT);
-                if (int.TryParse(Console.ReadLine(), out int size) && size > 0)
+                if (int.TryParse(Console.ReadLine(), out int size) && size >= 3)
                 {
                     Console.Clear();
                     return size;

@@ -22,6 +22,7 @@ namespace BoardGames
         public override (int row, int col, int number) MakeMove(List<Board> boards, Board board)
         {
             Console.WriteLine($"{Name}, enter your move as: row col number (e.g., 1 0 5)");  // prompt format
+            Console.WriteLine($"Available numbers: {string.Join(", ", AvailableNumbers)}");  // show available numbers  
 
             while (true)                                            // loop until valid input
             {
