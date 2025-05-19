@@ -3,7 +3,7 @@ using System;
 namespace BoardGames;
 
 // 7. Computer player logic for Gomoku
-class GomokuComputer : Player
+class GomokuComputer : GomokuPlayer
 {
 
     private readonly Random rand = new();
@@ -13,7 +13,7 @@ class GomokuComputer : Player
     private const int PLAYER2_SYMBOL = 2; // O
 
     public int Symbol { get; }
-    public GomokuComputer(string name, int symbol)
+    public GomokuComputer(string name, int symbol) : base(name, symbol)
     {
         Symbol = symbol;
     }
