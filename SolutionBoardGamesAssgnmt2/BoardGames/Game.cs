@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
 
 namespace BoardGames
 {
@@ -64,8 +65,10 @@ namespace BoardGames
                     case "2":
                     case "save":
                         Console.Write("Enter filename to save (e.g., mygame): ");
+                        Console.WriteLine("Note: filename CAN'T include any special characters");
                         string filename = Console.ReadLine()?.Trim();
-                        if (string.IsNullOrWhiteSpace(filename))
+                        // Only allow alphanumeric and spaces in filename
+                        if (string.IsNullOrWhiteSpace(filename) || !Regex.IsMatch(filename, @"^[a-zA-Z0-9 ]+$"))
                         {
                             DisplayMessageAndPause(INVALID_FILENAME_MESSAGE);
                             break;
